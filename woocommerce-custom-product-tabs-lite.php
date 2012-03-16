@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce Custom Product Tabs Lite
 Plugin URI: http://www.foxrunsoftware.net/articles/wordpress/woocommerce-custom-product-tabs/
 Description: Extends WooCommerce to add a custom product view page tab
-Version: 1.0.0
+Version: 1.0.1
 Author: Justin Stern
 Author URI: http://www.foxrunsoftware.net
 License: GPL2
@@ -33,7 +33,7 @@ if (!class_exists('WoocommerceCustomProductTabsLite')) :
 
 class WoocommerceCustomProductTabsLite {
 	private $tab_data = false;
-	const VERSION = "1.0.0";
+	const VERSION = "1.0.1";
 	
 	/**
 	 * Gets things started by adding an action to initialize this plugin once
@@ -174,11 +174,11 @@ class WoocommerceCustomProductTabsLite {
 	 * Run every time since the activation hook is not executed when updating a plugin
 	 */
 	private function install() {
-		if(get_option('woocommerce_custom_product_tabs_lite_db_version') != $this::VERSION) {
+		if(get_option('woocommerce_custom_product_tabs_lite_db_version') != WoocommerceCustomProductTabsLite::VERSION) {
 			$this->upgrade();
 			
 			// new version number
-			update_option('woocommerce_custom_product_tabs_lite_db_version', $this::VERSION);
+			update_option('woocommerce_custom_product_tabs_lite_db_version', WoocommerceCustomProductTabsLite::VERSION);
 		}
 	}
 	
