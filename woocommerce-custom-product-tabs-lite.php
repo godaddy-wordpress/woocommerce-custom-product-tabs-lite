@@ -109,7 +109,7 @@ class WoocommerceCustomProductTabsLite {
 	 * Adds a new tab to the Product Data postbox in the admin product interface
 	 */
 	public function product_write_panel_tab() {
-		echo "<li><a style=\"color:#555555;line-height:16px;padding:9px;text-shadow:0 1px 1px #FFFFFF;\" href=\"#'frs_woo_product_tabs'\">".__('Custom Tab')."</a></li>";
+		echo "<li><a style=\"color:#555555;line-height:16px;padding:9px;text-shadow:0 1px 1px #FFFFFF;\" href=\"#product_tabs\">".__('Custom Tab')."</a></li>";
 	}
 	
 	/**

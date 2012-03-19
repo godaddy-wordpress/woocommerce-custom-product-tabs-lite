@@ -3,7 +3,7 @@ Contributors: FoxRunSoftware
 Tags: woocommerce, product tabs
 Requires at least: 3.3
 Tested up to: 3.3
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 
 This plugin extends the WooCommerce e-commerce plugin by allowing a custom product tab to be created with arbitrary content.
 
@@ -12,12 +12,6 @@ This plugin extends the WooCommerce e-commerce plugin by allowing a custom produ
 This plugin extends the [WooCommerce](http://www.woothemes.com/woocommerce/) e-commerce plugin by allowing a custom product tab to be added to product view pages with arbitrary content.
 
 The custom tab, if defined, will appear in between the 'additional information' and 'reviews' tabs.
-
-= WooCommerce Compatibility =
-*This plugin has been tested with the following WooCommerce releases*
-
-* 1.5.1
-* 1.5
 
 = Plugin/Theme Support =
 *This plugin should be compatible with any WooCommerce theme and has been tested with the following*
@@ -43,6 +37,9 @@ The custom tab, if defined, will appear in between the 'additional information' 
 2. The custom tab displayed on the frontend
 
 == Changelog ==
+
+= 1.0.2 =
+* Fixes an admin bug introduced by the 1.0.1 release
 
 = 1.0.1 =
 * Fixes T_PAAMAYIM_NEKUDOTAYIM error (thanks daveshine)
