@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce Custom Product Tabs Lite
 Plugin URI: http://www.foxrunsoftware.net/articles/wordpress/woocommerce-custom-product-tabs/
 Description: Extends WooCommerce to add a custom product view page tab
-Version: 1.0.2
+Version: 1.0.3
 Author: Justin Stern
 Author URI: http://www.foxrunsoftware.net
 License: GPL2
@@ -33,7 +33,7 @@ if (!class_exists('WoocommerceCustomProductTabsLite')) :
 
 class WoocommerceCustomProductTabsLite {
 	private $tab_data = false;
-	const VERSION = "1.0.1";
+	const VERSION = "1.0.3";
 	
 	/**
 	 * Gets things started by adding an action to initialize this plugin once
@@ -128,10 +128,25 @@ class WoocommerceCustomProductTabsLite {
 		foreach($tab_data as $tab) {
 			// display the custom tab panel
 			echo '<div id="product_tabs" class="panel woocommerce_options_panel">';
-			echo woocommerce_wp_text_input( array( 'id' => '_tab_title', 'label' => __('Tab Title'), 'description' => __('Required for tab to be visible'), 'value' => $tab['title'] ) );
-			echo woocommerce_wp_textarea_input( array( 'id' => '_tab_content', 'label' => __('Content'), 'placeholder' => __('HTML and text to display.'), 'value' => $tab['content'] ) );
+			woocommerce_wp_text_input( array( 'id' => '_tab_title', 'label' => __('Tab Title'), 'description' => __('Required for tab to be visible'), 'value' => $tab['title'] ) );
+			$this->woocommerce_wp_textarea_input( array( 'id' => '_tab_content', 'label' => __('Content'), 'placeholder' => __('HTML and text to display.'), 'value' => $tab['content'], 'style' => 'width:70%;height:21.5em;' ) );
 			echo '</div>';
 		}
+	}
+	
+	private function woocommerce_wp_textarea_input( $field ) {
+		global $thepostid, $post;
+		
+		if (!$thepostid) $thepostid = $post->ID;
+		if (!isset($field['placeholder'])) $field['placeholder'] = '';
+		if (!isset($field['class'])) $field['class'] = 'short';
+		if (!isset($field['value'])) $field['value'] = get_post_meta($thepostid, $field['id'], true);
+		
+		echo '<p class="form-field '.$field['id'].'_field"><label for="'.$field['id'].'">'.$field['label'].'</label><textarea class="'.$field['class'].'" name="'.$field['id'].'" id="'.$field['id'].'" placeholder="'.$field['placeholder'].'" rows="2" cols="20"'.(isset($field['style']) ? ' style="'.$field['style'].'"' : '').'">'.esc_textarea( $field['value'] ).'</textarea> ';
+		
+		if (isset($field['description']) && $field['description']) echo '<span class="description">' .$field['description'] . '</span>';
+			
+		echo '</p>';
 	}
 	
 	/**
