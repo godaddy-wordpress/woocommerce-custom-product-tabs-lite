@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce Custom Product Tabs Lite
 Plugin URI: http://www.foxrunsoftware.net/articles/wordpress/woocommerce-custom-product-tabs/
 Description: Extends WooCommerce to add a custom product view page tab
-Version: 1.0.3
+Version: 1.1.0
 Author: Justin Stern
 Author URI: http://www.foxrunsoftware.net
 License: GPL2
@@ -33,7 +33,7 @@ if (!class_exists('WoocommerceCustomProductTabsLite')) :
 
 class WoocommerceCustomProductTabsLite {
 	private $tab_data = false;
-	const VERSION = "1.0.3";
+	const VERSION = "1.1.0";
 	
 	/**
 	 * Gets things started by adding an action to initialize this plugin once
@@ -58,6 +58,9 @@ class WoocommerceCustomProductTabsLite {
 		// frontend stuff
 		add_action('woocommerce_product_tabs',	   array($this, 'custom_product_tabs'),	   25);  // in between the attributes and reviews panels
 		add_action('woocommerce_product_tab_panels', array($this, 'custom_product_tabs_panel'), 25);
+		
+		// allow the use of shortcodes within the tab content
+		add_filter( 'woocommerce_custom_product_tabs_lite_content', 'do_shortcode' );
 	}
 	
 	/**
@@ -85,7 +88,7 @@ class WoocommerceCustomProductTabsLite {
 			foreach($this->tab_data as $tab) {
 				echo '<div class="panel" id="'.$tab['id'].'">';
 				echo '<h2>' . $tab['title'] . '</h2>';
-				echo $tab['content'];
+				echo apply_filters( 'woocommerce_custom_product_tabs_lite_content', $tab['content'], $tab['id'] );
 				echo '</div>';
 			}
 		}
