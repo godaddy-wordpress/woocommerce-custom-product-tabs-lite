@@ -9,7 +9,7 @@ This plugin extends the WooCommerce e-commerce plugin by allowing a custom produ
 
 == Description ==
 
-This plugin extends the [WooCommerce](http://www.woothemes.com/woomember/go?r=130284&redirect=www.woothemes.com/woocommerce/) e-commerce plugin by allowing a custom product tab to be added to product view pages with arbitrary content.
+This plugin extends the [WooCommerce](http://www.woothemes.com/woomember/go?r=130284&redirect=www.woothemes.com/woocommerce/) e-commerce plugin by allowing a custom product tab to be added to product view pages with arbitrary content, which may contain text, html or shortcodes.
 
 The custom tab, if defined, will appear in between the 'additional information' and 'reviews' tabs.
 
