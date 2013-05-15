@@ -3,7 +3,7 @@ Contributors: SkyVerge
 Tags: woocommerce, product tabs
 Requires at least: 3.3
 Tested up to: 3.5
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 
 This plugin extends the WooCommerce e-commerce plugin by allowing a custom product tab to be created with arbitrary content.
 
@@ -56,6 +56,9 @@ Yes, the upgrade process form the free to the premium Tab Manager plugin is pain
 
 
 == Changelog ==
+
+= 1.2.2 - 2013.05.15 =
+ * Fix - Unicode characters supported in tab title
 
 = 1.2.1 - 2013.04.26 =
  * Tweak - Minor code and documentation update

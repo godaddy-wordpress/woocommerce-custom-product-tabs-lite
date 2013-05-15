@@ -5,7 +5,7 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com
- * Version: 1.2.1
+ * Version: 1.2.2
  * Tested up to: 3.5
  *
  * Copyright: (c) 2012-2013 SkyVerge, Inc. (info@skyverge.com)
@@ -39,7 +39,7 @@ class WoocommerceCustomProductTabsLite {
 	private $tab_data = false;
 
 	/** plugin version number */
-	const VERSION = "1.2.1";
+	const VERSION = "1.2.2";
 
 	/** plugin version name */
 	const VERSION_OPTION_NAME = 'woocommerce_custom_product_tabs_lite_db_version';
@@ -173,9 +173,8 @@ class WoocommerceCustomProductTabsLite {
 	 * @param array $tab the tab
 	 */
 	public function custom_product_tabs_panel_content( $key, $tab ) {
-		echo '<h2>' . $tab['title'] . '</h2>';
+		echo apply_filters( 'woocommerce_custom_product_tabs_lite_heading', '<h2>' . $tab['title'] . '</h2>', $tab );
 		echo apply_filters( 'woocommerce_custom_product_tabs_lite_content', $tab['content'], $tab );
-
 	}
 
 
@@ -248,16 +247,21 @@ class WoocommerceCustomProductTabsLite {
 
 			$tab_id = '';
 			if ( $tab_title ) {
-				// convert the tab title into an id string
-				$tab_id = strtolower( $tab_title );
-				$tab_id = preg_replace( "/[^\w\s]/", '', $tab_id );
-				// remove non-alphas, numbers, underscores or whitespace
-				$tab_id = preg_replace( "/_+/", ' ', $tab_id );
-				// replace all underscores with single spaces
-				$tab_id = preg_replace( "/\s+/", '-', $tab_id );
-				// replace all multiple spaces with single dashes
-				$tab_id = 'tab-' . $tab_id;
-				// prepend with 'tab-' string
+				if ( strlen( $tab_title ) != strlen( utf8_encode( $tab_title ) ) ) {
+					// can't have titles with utf8 characters as it breaks the tab-switching javascript
+					$tab_id = "tab-custom";
+				} else {
+					// convert the tab title into an id string
+					$tab_id = strtolower( $tab_title );
+					$tab_id = preg_replace( "/[^\w\s]/", '', $tab_id );
+					// remove non-alphas, numbers, underscores or whitespace
+					$tab_id = preg_replace( "/_+/", ' ', $tab_id );
+					// replace all underscores with single spaces
+					$tab_id = preg_replace( "/\s+/", '-', $tab_id );
+					// replace all multiple spaces with single dashes
+					$tab_id = 'tab-' . $tab_id;
+					// prepend with 'tab-' string
+				}
 			}
 
 			// save the data to the database
