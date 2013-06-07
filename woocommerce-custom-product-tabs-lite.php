@@ -5,7 +5,7 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com
- * Version: 1.2.2
+ * Version: 1.2.3
  * Tested up to: 3.5
  *
  * Copyright: (c) 2012-2013 SkyVerge, Inc. (info@skyverge.com)
@@ -39,7 +39,7 @@ class WoocommerceCustomProductTabsLite {
 	private $tab_data = false;
 
 	/** plugin version number */
-	const VERSION = "1.2.2";
+	const VERSION = "1.2.3";
 
 	/** plugin version name */
 	const VERSION_OPTION_NAME = 'woocommerce_custom_product_tabs_lite_db_version';
@@ -220,8 +220,8 @@ class WoocommerceCustomProductTabsLite {
 		foreach ( $tab_data as $tab ) {
 			// display the custom tab panel
 			echo '<div id="woocommerce_product_tabs_lite" class="panel wc-metaboxes-wrapper woocommerce_options_panel">';
-			woocommerce_wp_text_input( array( 'id' => '_tab_title', 'label' => __( 'Tab Title' ), 'description' => __( 'Required for tab to be visible' ), 'value' => $tab['title'] ) );
-			$this->woocommerce_wp_textarea_input( array( 'id' => '_tab_content', 'label' => __( 'Content' ), 'placeholder' => __( 'HTML and text to display.' ), 'value' => $tab['content'], 'style' => 'width:70%;height:21.5em;' ) );
+			woocommerce_wp_text_input( array( 'id' => '_wc_custom_product_tabs_lite_tab_title', 'label' => __( 'Tab Title' ), 'description' => __( 'Required for tab to be visible' ), 'value' => $tab['title'] ) );
+			$this->woocommerce_wp_textarea_input( array( 'id' => '_wc_custom_product_tabs_lite_tab_content', 'label' => __( 'Content' ), 'placeholder' => __( 'HTML and text to display.' ), 'value' => $tab['content'], 'style' => 'width:70%;height:21.5em;' ) );
 			echo '</div>';
 		}
 	}
@@ -236,8 +236,8 @@ class WoocommerceCustomProductTabsLite {
 	 */
 	public function product_save_data( $post_id, $post ) {
 
-		$tab_title = stripslashes( $_POST['_tab_title'] );
-		$tab_content = stripslashes( $_POST['_tab_content'] );
+		$tab_title = stripslashes( $_POST['_wc_custom_product_tabs_lite_tab_title'] );
+		$tab_content = stripslashes( $_POST['_wc_custom_product_tabs_lite_tab_content'] );
 
 		if ( empty( $tab_title ) && empty( $tab_content ) && get_post_meta( $post_id, 'frs_woo_product_tabs', true ) ) {
 			// clean up if the custom tabs are removed
