@@ -1,9 +1,7 @@
 === WooCommerce Custom Product Tabs Lite ===
 Contributors: SkyVerge
 Tags: woocommerce, product tabs
-Requires at least: 3.3
-Tested up to: 3.5
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 
 This plugin extends the WooCommerce e-commerce plugin by allowing a custom product tab to be created with arbitrary content.
 
@@ -64,6 +62,10 @@ function hide_custom_product_tabs_lite_tab_heading( $heading ) { return ''; }
 `
 
 == Changelog ==
+
+= 1.2.5 - 2014.01.22 =
+ * Misc - WooCommerce 2.1 support
+ * Localization - Text domain is now woocommerce-custom-product-tabs-lite
 
 = 1.2.4 - 2013.08.26 =
  * Fix - Shortcode support in custom tab content

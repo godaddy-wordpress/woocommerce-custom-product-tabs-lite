@@ -5,8 +5,10 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com
- * Version: 1.2.4
+ * Version: 1.2.5
  * Tested up to: 3.5
+ * Text Domain: woocommerce-custom-product-tabs-lite
+ * Domain Path: /i18n/languages/
  *
  * Copyright: (c) 2012-2013 SkyVerge, Inc. (info@skyverge.com)
  *
@@ -24,22 +26,26 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Check if WooCommerce is active and bail if it's not
-if ( ! WoocommerceCustomProductTabsLite::is_woocommerce_active() )
+if ( ! WooCommerceCustomProductTabsLite::is_woocommerce_active() ) {
 	return;
+}
 
 /**
- * The WoocommerceCustomProductTabsLite global object
+ * The WooCommerceCustomProductTabsLite global object
  * @name $woocommerce_product_tabs_lite
- * @global WoocommerceCustomProductTabsLite $GLOBALS['woocommerce_product_tabs_lite']
+ * @global WooCommerceCustomProductTabsLite $GLOBALS['woocommerce_product_tabs_lite']
  */
-$GLOBALS['woocommerce_product_tabs_lite'] = new WoocommerceCustomProductTabsLite();
+$GLOBALS['woocommerce_product_tabs_lite'] = new WooCommerceCustomProductTabsLite();
 
-class WoocommerceCustomProductTabsLite {
+class WooCommerceCustomProductTabsLite {
 
 	private $tab_data = false;
 
 	/** plugin version number */
-	const VERSION = "1.2.4";
+	const VERSION = "1.2.5";
+
+	/** plugin text domain */
+	const TEXT_DOMAIN = 'woocommerce-custom-product-tabs-lite';
 
 	/** plugin version name */
 	const VERSION_OPTION_NAME = 'woocommerce_custom_product_tabs_lite_db_version';
@@ -53,7 +59,20 @@ class WoocommerceCustomProductTabsLite {
 		// Installation
 		if ( is_admin() && ! defined( 'DOING_AJAX' ) ) $this->install();
 
+		add_action( 'init',             array( $this, 'load_translation' ) );
 		add_action( 'woocommerce_init', array( $this, 'init' ) );
+	}
+
+
+	/**
+	 * Init WooCommerce PDF Product Vouchers when WordPress initializes
+	 *
+	 * @since 1.2.5
+	 */
+	public function load_translation() {
+
+		// localization
+		load_plugin_textdomain( 'woocommerce-custom-product-tabs-lite', false, dirname( plugin_basename( __FILE__ ) ) . '/i18n/languages' );
 	}
 
 
@@ -67,15 +86,7 @@ class WoocommerceCustomProductTabsLite {
 		add_action( 'woocommerce_process_product_meta',     array( $this, 'product_save_data' ), 10, 2 );
 
 		// frontend stuff
-		if ( version_compare( WOOCOMMERCE_VERSION, "2.0" ) >= 0 ) {
-			// WC >= 2.0
-			add_filter( 'woocommerce_product_tabs', array( $this, 'add_custom_product_tabs' ) );
-		} else {
-			// WC < 2.0
-			add_action( 'woocommerce_product_tabs', array( $this, 'custom_product_tabs' ), 25 );
-			// in between the attributes and reviews panels
-			add_action( 'woocommerce_product_tab_panels', array( $this, 'custom_product_tabs_panel' ), 25 );
-		}
+		add_filter( 'woocommerce_product_tabs', array( $this, 'add_custom_product_tabs' ) );
 
 		// allow the use of shortcodes within the tab content
 		add_filter( 'woocommerce_custom_product_tabs_lite_content', 'do_shortcode' );
@@ -107,7 +118,7 @@ class WoocommerceCustomProductTabsLite {
 		if ( $this->product_has_custom_tabs( $product ) ) {
 			foreach ( $this->tab_data as $tab ) {
 				$tabs[ $tab['id'] ] = array(
-					'title'    => $tab['title'],
+					'title'    => __( $tab['title'], self::TEXT_DOMAIN ),
 					'priority' => 25,
 					'callback' => array( $this, 'custom_product_tabs_panel_content' ),
 					'content'  => $tab['content'],  // custom field
@@ -116,42 +127,6 @@ class WoocommerceCustomProductTabsLite {
 		}
 
 		return $tabs;
-	}
-
-
-	/**
-	 * Write the custom tab on the product view page.  In WooCommerce these are
-	 * handled by templates.
-	 *
-	 * WC < 2.0
-	 */
-	public function custom_product_tabs() {
-		global $product;
-
-		if ( $this->product_has_custom_tabs( $product ) ) {
-			foreach ( $this->tab_data as $tab ) {
-				echo "<li><a href=\"#{$tab['id']}\">" . __( $tab['title'] ) . "</a></li>";
-			}
-		}
-	}
-
-
-	/**
-	 * Write the custom tab panel on the product view page.  In WooCommerce these
-	 * are handled by templates.
-	 *
-	 * WC < 2.0
-	 */
-	public function custom_product_tabs_panel() {
-		global $product;
-
-		if ( $this->product_has_custom_tabs( $product ) ) {
-			foreach ( $this->tab_data as $tab ) {
-				echo '<div class="panel" id="' . $tab['id'] . '">';
-				$this->custom_product_tabs_panel_content( $tab['id'], $tab );
-				echo '</div>';
-			}
-		}
 	}
 
 
@@ -190,7 +165,7 @@ class WoocommerceCustomProductTabsLite {
 	 * Adds a new tab to the Product Data postbox in the admin product interface
 	 */
 	public function product_write_panel_tab() {
-		echo "<li class=\"product_tabs_lite_tab\"><a href=\"#woocommerce_product_tabs_lite\">" . __( 'Custom Tab' ) . "</a></li>";
+		echo "<li class=\"product_tabs_lite_tab\"><a href=\"#woocommerce_product_tabs_lite\">" . __( 'Custom Tab', self::TEXT_DOMAIN ) . "</a></li>";
 	}
 
 
@@ -201,19 +176,13 @@ class WoocommerceCustomProductTabsLite {
 		global $post;
 		// the product
 
-		if ( version_compare( WOOCOMMERCE_VERSION, "2.0.0" ) >= 0 ) {
-			$style = 'padding:5px 5px 5px 28px;background-repeat:no-repeat;background-position:5px 7px;';
-			$active_style = '';
-		} else {
-			$style = 'padding:9px 9px 9px 34px;line-height:16px;border-bottom:1px solid #d5d5d5;text-shadow:0 1px 1px #fff;color:#555555;background-repeat:no-repeat;background-position:9px 9px;';
-			$active_style = '#woocommerce-product-data ul.product_data_tabs li.product_tabs_lite_tab.active a { border-bottom: 1px solid #F8F8F8; }';
+		if ( defined( 'WOOCOMMERCE_VERSION' ) && version_compare( WOOCOMMERCE_VERSION, '2.1', '<' ) ) {
+			?>
+			<style type="text/css">
+				#woocommerce-product-data ul.product_data_tabs li.product_tabs_lite_tab a { padding:5px 5px 5px 28px;background-repeat:no-repeat;background-position:5px 7px; }
+			</style>
+			<?php
 		}
-		?>
-		<style type="text/css">
-			#woocommerce-product-data ul.product_data_tabs li.product_tabs_lite_tab a { <?php echo $style; ?> }
-			<?php echo $active_style; ?>
-		</style>
-		<?php
 
 		// pull the custom tab data out of the database
 		$tab_data = maybe_unserialize( get_post_meta( $post->ID, 'frs_woo_product_tabs', true ) );
@@ -225,8 +194,8 @@ class WoocommerceCustomProductTabsLite {
 		foreach ( $tab_data as $tab ) {
 			// display the custom tab panel
 			echo '<div id="woocommerce_product_tabs_lite" class="panel wc-metaboxes-wrapper woocommerce_options_panel">';
-			woocommerce_wp_text_input( array( 'id' => '_wc_custom_product_tabs_lite_tab_title', 'label' => __( 'Tab Title' ), 'description' => __( 'Required for tab to be visible' ), 'value' => $tab['title'] ) );
-			$this->woocommerce_wp_textarea_input( array( 'id' => '_wc_custom_product_tabs_lite_tab_content', 'label' => __( 'Content' ), 'placeholder' => __( 'HTML and text to display.' ), 'value' => $tab['content'], 'style' => 'width:70%;height:21.5em;' ) );
+			woocommerce_wp_text_input( array( 'id' => '_wc_custom_product_tabs_lite_tab_title', 'label' => __( 'Tab Title', self::TEXT_DOMAIN ), 'description' => __( 'Required for tab to be visible', self::TEXT_DOMAIN ), 'value' => $tab['title'] ) );
+			$this->woocommerce_wp_textarea_input( array( 'id' => '_wc_custom_product_tabs_lite_tab_content', 'label' => __( 'Content', self::TEXT_DOMAIN ), 'placeholder' => __( 'HTML and text to display.', self::TEXT_DOMAIN ), 'value' => $tab['content'], 'style' => 'width:70%;height:21.5em;' ) );
 			echo '</div>';
 		}
 	}
@@ -286,8 +255,9 @@ class WoocommerceCustomProductTabsLite {
 
 		echo '<p class="form-field ' . $field['id'] . '_field"><label style="display:block;" for="' . $field['id'] . '">' . $field['label'] . '</label><textarea class="' . $field['class'] . '" name="' . $field['id'] . '" id="' . $field['id'] . '" placeholder="' . $field['placeholder'] . '" rows="2" cols="20"' . (isset( $field['style'] ) ? ' style="' . $field['style'] . '"' : '') . '>' . esc_textarea( $field['value'] ) . '</textarea> ';
 
-		if ( isset( $field['description'] ) && $field['description'] )
+		if ( isset( $field['description'] ) && $field['description'] ) {
 			echo '<span class="description">' . $field['description'] . '</span>';
+		}
 
 		echo '</p>';
 	}
@@ -321,8 +291,9 @@ class WoocommerceCustomProductTabsLite {
 
 		$active_plugins = (array) get_option( 'active_plugins', array() );
 
-		if ( is_multisite() )
+		if ( is_multisite() ) {
 			$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
+		}
 
 		return in_array( 'woocommerce/woocommerce.php', $active_plugins ) || array_key_exists( 'woocommerce/woocommerce.php', $active_plugins );
 	}
