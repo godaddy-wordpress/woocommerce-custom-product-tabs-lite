@@ -8,7 +8,7 @@ module.exports = function( grunt ) {
 	config.wp_deploy = {
 		deploy: {
 			options: {
-				plugin_slug: 'woocommerce-custom-product-tabs-lite',
+				plugin_slug: grunt.option( 'plugin-slug' ),
 				svn_user: 'SkyVerge',
 				build_dir: 'build',
 				assets_dir: 'wp-assets'

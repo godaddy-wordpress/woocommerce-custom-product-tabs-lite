@@ -11,6 +11,9 @@ module.exports = function( grunt ) {
 	var _    = require( 'underscore' );
 	var path = require( 'path' );
 
+	// Set plugin slug option
+	grunt.option( 'plugin-slug', path.basename( process.cwd() ) );
+
 	var gruntConfig = {};
 
 	// options

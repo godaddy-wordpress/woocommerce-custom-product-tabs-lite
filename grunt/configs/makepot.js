@@ -10,8 +10,8 @@ module.exports = function( grunt ) {
 			options: {
 				cwd: '',
 				domainPath: 'i18n/languages',
-				potFilename: 'woocommerce-custom-product-tabs-lite.pot',
-				potHeaders: { 'report-msgid-bugs-to': 'https://github.com/skyverge/woocommerce-custom-product-tabs-lite/issues' },
+				potFilename: grunt.option( 'plugin-slug' ) + '.pot',
+				potHeaders: { 'report-msgid-bugs-to': 'https://github.com/skyverge/' + grunt.option( 'plugin-slug' ) + '/issues' },
 				processPot: function( pot ) {
 					delete pot.headers['x-generator'];
 					return pot;
