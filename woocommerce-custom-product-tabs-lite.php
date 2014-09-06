@@ -65,7 +65,7 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/**
-	 * Init WooCommerce PDF Product Vouchers when WordPress initializes
+	 * Load translations
 	 *
 	 * @since 1.2.5
 	 */
