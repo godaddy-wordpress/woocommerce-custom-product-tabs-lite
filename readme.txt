@@ -1,5 +1,5 @@
 === WooCommerce Custom Product Tabs Lite ===
-Contributors: SkyVerge
+Contributors: maxrice, justinstern, tamarazuk, SkyVerge
 Tags: woocommerce, product tabs
 Requires at least: 3.8
 Tested up to: 4.0
