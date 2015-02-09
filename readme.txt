@@ -1,39 +1,44 @@
 === WooCommerce Custom Product Tabs Lite ===
-Contributors: maxrice, justinstern, tamarazuk, SkyVerge
+Contributors: maxrice, tamarazuk, SkyVerge
 Tags: woocommerce, product tabs
 Requires at least: 3.8
-Tested up to: 4.0
+Tested up to: 4.1
 Requires WooCommerce at least: 2.0
-Tested WooCommerce up to: 2.2
+Tested WooCommerce up to: 2.3
 Stable tag: 1.2.6
 
-This plugin extends the WooCommerce e-commerce plugin by allowing a custom product tab to be created with arbitrary content.
+This plugin extends WooCommerce by allowing a custom product tab to be created with any content.
 
 == Description ==
 
-This plugin extends the [WooCommerce](www.woothemes.com/woocommerce/) e-commerce plugin by allowing a custom product tab to be added to product view pages with arbitrary content, which may contain text, html or shortcodes.
+This plugin extends [WooCommerce](www.woothemes.com/woocommerce/) to allow a custom product tab to be added to single product pages with arbitrary content. The new custom tab may contain text, html, or shortcodes, and will appear between the 'Additional Information' and 'Reviews' tabs.
 
-The custom tab, if defined, will appear in between the 'additional information' and 'reviews' tabs.
+> Requires WooCommerce 2.1+
 
-To easily add multiple tabs, share tabs between products, and more features, consider upgrading to the premium [Tab Manager](http://www.woothemes.com/products/woocommerce-tab-manager/)
+= Features =
 
-= Plugin/Theme Support =
-*This plugin should be compatible with any WooCommerce theme and has been tested with the following*
+ - Add a single custom tab to each product in your shop
+ - Insert any desired content into custom tabs to provide product specifications, shipping info, or more
+ - Custom tabs can accept shortcodes or HTML content &ndash; great for embedding a marketing video or inquiry form
 
-* Theme: ["Wootique" (free, by WooThemes)](www.woothemes.com/2011/09/wootique/)
-* Theme: ["Woostore"](www.woothemes.com/2011/09/woostore/) (thanks to Dusan Belescak)
+To easily add multiple tabs, share tabs between products, and more features, please consider upgrading to the premium [Tab Manager](http://www.woothemes.com/products/woocommerce-tab-manager/).
 
 = Feedback =
 * We are open to your suggestions and feedback - Thank you for using or trying out one of our plugins!
 * Drop us a line at [www.skyverge.com](http://www.skyverge.com)
 
-= More =
-* [Also see our other plugins](http://www.skyverge.com) or see [our WordPress.org profile page](http://profiles.wordpress.org/skyverge/)
-* Upgrade to the premium Tab Manager now available from [WooThemes](http://www.woothemes.com/products/woocommerce-tab-manager/)
+= Support Details =
+We do support our free plugins and extensions, but please understand that support for premium products takes priority. We typically check the forums every few days (with a maximum delay of one week).
+
+= More Details =
+ - See the [product page](http://www.skyverge.com/product/woocommerce-custom-product-tabs-lite/) for full details.
+ - Check out the pro version at WooThemes: [WooCommerce Tab Manager](http://www.woothemes.com/products/woocommerce-tab-manager/)
+ - View more of SkyVerge's [free WooCommerce extensions](http://profiles.wordpress.org/skyverge/)
+ - View all [SkyVerge WooCommerce extensions](http://www.skyverge.com/shop/)
 
 == Installation ==
 
-1. Upload the entire 'woocommerce-custom-product-tabs-lite' folder to the '/wp-content/plugins/' directory
+1. Upload the entire 'woocommerce-custom-product-tabs-lite' folder to the '/wp-content/plugins/' directory or upload the zip file via Plugins &gt; Add New
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Edit a product, then click on 'Custom Tab' within the 'Product Data' panel
 
@@ -46,11 +51,7 @@ To easily add multiple tabs, share tabs between products, and more features, con
 
 = Can I add more than tab, or change the order of the tabs? =
 
-This free version does not have that functionality, but now you can with the paid [WooCommerce Tab Manager](http://www.woothemes.com/products/woocommerce-tab-manager/)
-
-= Can I share tab content between more than one tab? =
-
-This free version does not have that functionality, but now you can with the paid [WooCommerce Tab Manager](http://www.woothemes.com/products/woocommerce-tab-manager/)
+This free version does not have that functionality, but you can with the premium [WooCommerce Tab Manager](http://www.woothemes.com/products/woocommerce-tab-manager/).
 
 = I already use the free plugin and now I want to upgrade to the premium Tab Manager, is that possible? =
 
@@ -60,10 +61,16 @@ Yes, the upgrade process form the free to the premium Tab Manager plugin is pain
 
 The tab heading is shown before the tab content and is the same string as the tab title.  An easy way to hide this is to add the following to the bottom of your theme's functions.php:
 
-`
-add_filter( 'woocommerce_custom_product_tabs_lite_heading', 'hide_custom_product_tabs_lite_tab_heading' );
-function hide_custom_product_tabs_lite_tab_heading( $heading ) { return ''; }
-`
+```
+add_filter( 'woocommerce_custom_product_tabs_lite_heading', 'hide_custom_tab_heading' );
+function hide_custom_tab_heading( $heading ) { 
+  return '';
+}
+```
+
+= Can I share tab content between more than one tab? =
+
+This free version does not have that functionality, but you can create global tabs with the [WooCommerce Tab Manager](http://www.woothemes.com/products/woocommerce-tab-manager/).
 
 == Changelog ==
 
