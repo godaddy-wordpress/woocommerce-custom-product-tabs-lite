@@ -61,12 +61,12 @@ Yes, the upgrade process form the free to the premium Tab Manager plugin is pain
 
 The tab heading is shown before the tab content and is the same string as the tab title.  An easy way to hide this is to add the following to the bottom of your theme's functions.php:
 
-```
+`
 add_filter( 'woocommerce_custom_product_tabs_lite_heading', 'hide_custom_tab_heading' );
 function hide_custom_tab_heading( $heading ) {
   return '';
 }
-```
+`
 
 = Can I share tab content between more than one tab? =
 
