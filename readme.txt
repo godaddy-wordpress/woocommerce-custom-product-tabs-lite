@@ -5,7 +5,7 @@ Requires at least: 3.8
 Tested up to: 4.1
 Requires WooCommerce at least: 2.0
 Tested WooCommerce up to: 2.3
-Stable tag: 1.2.6
+Stable tag: 1.2.7
 
 This plugin extends WooCommerce by allowing a custom product tab to be created with any content.
 
@@ -63,7 +63,7 @@ The tab heading is shown before the tab content and is the same string as the ta
 
 ```
 add_filter( 'woocommerce_custom_product_tabs_lite_heading', 'hide_custom_tab_heading' );
-function hide_custom_tab_heading( $heading ) { 
+function hide_custom_tab_heading( $heading ) {
   return '';
 }
 ```
@@ -73,6 +73,9 @@ function hide_custom_tab_heading( $heading ) {
 This free version does not have that functionality, but you can create global tabs with the [WooCommerce Tab Manager](http://www.woothemes.com/products/woocommerce-tab-manager/).
 
 == Changelog ==
+
+= 1.2.7 - 2015.02.09 =
+ * Misc - WooCommerce 2.3 Compatibility
 
 = 1.2.6 - 2014.09.05 =
  * Misc - WooCommerce 2.2 Compatibility
