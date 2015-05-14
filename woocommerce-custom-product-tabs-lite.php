@@ -1,16 +1,16 @@
 <?php
 /**
  * Plugin Name: WooCommerce Custom Product Tabs Lite
- * Plugin URI: http://www.foxrunsoftware.net/articles/wordpress/woocommerce-custom-product-tabs/
+ * Plugin URI: https://www.skyverge.com/product/woocommerce-custom-product-tabs-lite/
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
- * Author URI: http://www.skyverge.com
- * Version: 1.2.7
- * Tested up to: 4.0
+ * Author URI: http://www.skyverge.com/
+ * Version: 1.2.8
+ * Tested up to: 4.2
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
  *
- * Copyright: (c) 2012-2013 SkyVerge, Inc. (info@skyverge.com)
+ * Copyright: (c) 2012-2015 SkyVerge, Inc. (info@skyverge.com)
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -18,7 +18,7 @@
  * @package     WC-Custom-Product-Tabs-Lite
  * @author      SkyVerge
  * @category    Plugin
- * @copyright   Copyright (c) 2012-2013, SkyVerge, Inc.
+ * @copyright   Copyright (c) 2012-2015, SkyVerge, Inc.
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -117,8 +117,9 @@ class WooCommerceCustomProductTabsLite {
 
 		if ( $this->product_has_custom_tabs( $product ) ) {
 			foreach ( $this->tab_data as $tab ) {
+				$tab_title = __( $tab['title'], self::TEXT_DOMAIN );
 				$tabs[ $tab['id'] ] = array(
-					'title'    => __( $tab['title'], self::TEXT_DOMAIN ),
+					'title'    => apply_filters( 'woocommerce_custom_product_tabs_lite_title', $tab_title, $product, $this ),
 					'priority' => 25,
 					'callback' => array( $this, 'custom_product_tabs_panel_content' ),
 					'content'  => $tab['content'],  // custom field
