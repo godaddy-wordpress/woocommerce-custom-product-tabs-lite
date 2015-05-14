@@ -2,10 +2,10 @@
 Contributors: maxrice, tamarazuk, SkyVerge
 Tags: woocommerce, product tabs
 Requires at least: 3.8
-Tested up to: 4.1
+Tested up to: 4.2
 Requires WooCommerce at least: 2.0
 Tested WooCommerce up to: 2.3
-Stable tag: 1.2.7
+Stable tag: 1.2.8
 
 This plugin extends WooCommerce by allowing a custom product tab to be created with any content.
 
@@ -62,17 +62,34 @@ Yes, the upgrade process form the free to the premium Tab Manager plugin is pain
 The tab heading is shown before the tab content and is the same string as the tab title.  An easy way to hide this is to add the following to the bottom of your theme's functions.php:
 
 `
-add_filter( 'woocommerce_custom_product_tabs_lite_heading', 'hide_custom_tab_heading' );
 function hide_custom_tab_heading( $heading ) {
-  return '';
+  __return_empty_string();
 }
+add_filter( 'woocommerce_custom_product_tabs_lite_heading', 'hide_custom_tab_heading' );
 `
 
 = Can I share tab content between more than one tab? =
 
 This free version does not have that functionality, but you can create global tabs with the [WooCommerce Tab Manager](http://www.woothemes.com/products/woocommerce-tab-manager/).
 
+= Can I set the same tab title for all products? =
+
+Yep, there's the `woocommerce_custom_product_tabs_lite_title` that passes in the tab title for you to change. This filter also passes in the `$product` and class instance if you'd like to change this conditionally.
+
+Here's how you can set one title for all custom tabs, regardless of what title is entered on the product page:
+
+`
+function sv_change_custom_tab_title( $title ) {
+ $title = 'Global tab title';
+ return $title;
+}
+add_filter( 'woocommerce_custom_product_tabs_lite_title', 'sv_change_custom_tab_title' );
+`
+
 == Changelog ==
+
+= 1.2.8 - 2015.05.14 =
+ * Misc - added `woocommerce_custom_product_tabs_lite_title` filter to update tab titles
 
 = 1.2.7 - 2015.02.09 =
  * Misc - WooCommerce 2.3 Compatibility
