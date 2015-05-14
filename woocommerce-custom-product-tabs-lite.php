@@ -5,7 +5,7 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.2.8
+ * Version: 1.2.9
  * Tested up to: 4.2
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
