@@ -2,7 +2,7 @@
 # This file is distributed under the GNU General Public License v3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Custom Product Tabs Lite 1.2.7\n"
+"Project-Id-Version: WooCommerce Custom Product Tabs Lite 1.2.8\n"
 "Report-Msgid-Bugs-To: "
 "https://github.com/skyverge/woocommerce-custom-product-tabs-lite/issues\n"
 "POT-Creation-Date: 2014-09-05 04:31:12+00:00\n"
@@ -14,27 +14,27 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
 #: build/woocommerce-custom-product-tabs-lite.php:168
-#: woocommerce-custom-product-tabs-lite.php:168
+#: woocommerce-custom-product-tabs-lite.php:169
 msgid "Custom Tab"
 msgstr ""
 
 #: build/woocommerce-custom-product-tabs-lite.php:197
-#: woocommerce-custom-product-tabs-lite.php:197
+#: woocommerce-custom-product-tabs-lite.php:198
 msgid "Tab Title"
 msgstr ""
 
 #: build/woocommerce-custom-product-tabs-lite.php:197
-#: woocommerce-custom-product-tabs-lite.php:197
+#: woocommerce-custom-product-tabs-lite.php:198
 msgid "Required for tab to be visible"
 msgstr ""
 
 #: build/woocommerce-custom-product-tabs-lite.php:198
-#: woocommerce-custom-product-tabs-lite.php:198
+#: woocommerce-custom-product-tabs-lite.php:199
 msgid "Content"
 msgstr ""
 
 #: build/woocommerce-custom-product-tabs-lite.php:198
-#: woocommerce-custom-product-tabs-lite.php:198
+#: woocommerce-custom-product-tabs-lite.php:199
 msgid "HTML and text to display."
 msgstr ""
 
@@ -43,9 +43,7 @@ msgid "WooCommerce Custom Product Tabs Lite"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid ""
-"http://www.foxrunsoftware.net/articles/wordpress/woocommerce-custom-product-"
-"tabs/"
+msgid "https://www.skyverge.com/product/woocommerce-custom-product-tabs-lite/"
 msgstr ""
 
 #. Description of the plugin/theme
@@ -57,5 +55,5 @@ msgid "SkyVerge"
 msgstr ""
 
 #. Author URI of the plugin/theme
-msgid "http://www.skyverge.com"
+msgid "http://www.skyverge.com/"
 msgstr ""
