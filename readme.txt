@@ -85,7 +85,7 @@ add_filter( 'woocommerce_custom_product_tabs_lite_title', 'sv_change_custom_tab_
 
 == Changelog ==
 
-= 1.3.0 - 2015.nn.nn =
+= 1.3.0 - 2015.07.28 =
  * Misc - WooCommerce 2.4 Compatibility
 
 = 1.2.9 - 2015.05.14 =
