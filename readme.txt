@@ -13,7 +13,7 @@ This plugin extends WooCommerce by allowing a custom product tab to be created w
 
 This plugin extends [WooCommerce](www.woothemes.com/woocommerce/) to allow a custom product tab to be added to single product pages with arbitrary content. The new custom tab may contain text, html, or shortcodes, and will appear between the 'Additional Information' and 'Reviews' tabs.
 
-> Requires WooCommerce 2.1+
+> Requires WooCommerce 2.2+
 
 = Features =
 
