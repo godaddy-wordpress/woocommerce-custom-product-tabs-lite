@@ -5,8 +5,8 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.3.0
- * Tested up to: 4.2
+ * Version: 1.3.0-1
+ * Tested up to: 4.3.1
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
  *
@@ -42,10 +42,7 @@ class WooCommerceCustomProductTabsLite {
 	private $tab_data = false;
 
 	/** plugin version number */
-	const VERSION = "1.3.0";
-
-	/** plugin text domain */
-	const TEXT_DOMAIN = 'woocommerce-custom-product-tabs-lite';
+	const VERSION = "1.3.0-1";
 
 	/** plugin version name */
 	const VERSION_OPTION_NAME = 'woocommerce_custom_product_tabs_lite_db_version';
@@ -117,7 +114,7 @@ class WooCommerceCustomProductTabsLite {
 
 		if ( $this->product_has_custom_tabs( $product ) ) {
 			foreach ( $this->tab_data as $tab ) {
-				$tab_title = __( $tab['title'], self::TEXT_DOMAIN );
+				$tab_title = __( $tab['title'], 'woocommerce-custom-product-tabs-lite' );
 				$tabs[ $tab['id'] ] = array(
 					'title'    => apply_filters( 'woocommerce_custom_product_tabs_lite_title', $tab_title, $product, $this ),
 					'priority' => 25,
@@ -166,7 +163,7 @@ class WooCommerceCustomProductTabsLite {
 	 * Adds a new tab to the Product Data postbox in the admin product interface
 	 */
 	public function product_write_panel_tab() {
-		echo "<li class=\"product_tabs_lite_tab\"><a href=\"#woocommerce_product_tabs_lite\">" . __( 'Custom Tab', self::TEXT_DOMAIN ) . "</a></li>";
+		echo "<li class=\"product_tabs_lite_tab\"><a href=\"#woocommerce_product_tabs_lite\">" . __( 'Custom Tab', 'woocommerce-custom-product-tabs-lite' ) . "</a></li>";
 	}
 
 
@@ -187,8 +184,8 @@ class WooCommerceCustomProductTabsLite {
 		foreach ( $tab_data as $tab ) {
 			// display the custom tab panel
 			echo '<div id="woocommerce_product_tabs_lite" class="panel wc-metaboxes-wrapper woocommerce_options_panel">';
-			woocommerce_wp_text_input( array( 'id' => '_wc_custom_product_tabs_lite_tab_title', 'label' => __( 'Tab Title', self::TEXT_DOMAIN ), 'description' => __( 'Required for tab to be visible', self::TEXT_DOMAIN ), 'value' => $tab['title'] ) );
-			$this->woocommerce_wp_textarea_input( array( 'id' => '_wc_custom_product_tabs_lite_tab_content', 'label' => __( 'Content', self::TEXT_DOMAIN ), 'placeholder' => __( 'HTML and text to display.', self::TEXT_DOMAIN ), 'value' => $tab['content'], 'style' => 'width:70%;height:21.5em;' ) );
+			woocommerce_wp_text_input( array( 'id' => '_wc_custom_product_tabs_lite_tab_title', 'label' => __( 'Tab Title', 'woocommerce-custom-product-tabs-lite' ), 'description' => __( 'Required for tab to be visible', 'woocommerce-custom-product-tabs-lite' ), 'value' => $tab['title'] ) );
+			$this->woocommerce_wp_textarea_input( array( 'id' => '_wc_custom_product_tabs_lite_tab_content', 'label' => __( 'Content', 'woocommerce-custom-product-tabs-lite' ), 'placeholder' => __( 'HTML and text to display.', 'woocommerce-custom-product-tabs-lite' ), 'value' => $tab['content'], 'style' => 'width:70%;height:21.5em;' ) );
 			echo '</div>';
 		}
 	}
