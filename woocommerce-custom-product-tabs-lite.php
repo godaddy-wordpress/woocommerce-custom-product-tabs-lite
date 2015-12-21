@@ -5,12 +5,12 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.3.1
- * Tested up to: 4.3.1
+ * Version: 1.3.1-1
+ * Tested up to: 4.4
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
  *
- * Copyright: (c) 2012-2015 SkyVerge, Inc. (info@skyverge.com)
+ * Copyright: (c) 2012-2016 SkyVerge, Inc. (info@skyverge.com)
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -18,7 +18,7 @@
  * @package     WC-Custom-Product-Tabs-Lite
  * @author      SkyVerge
  * @category    Plugin
- * @copyright   Copyright (c) 2012-2015, SkyVerge, Inc.
+ * @copyright   Copyright (c) 2012-2016, SkyVerge, Inc.
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -30,19 +30,15 @@ if ( ! WooCommerceCustomProductTabsLite::is_woocommerce_active() ) {
 	return;
 }
 
-/**
- * The WooCommerceCustomProductTabsLite global object
- * @name $woocommerce_product_tabs_lite
- * @global WooCommerceCustomProductTabsLite $GLOBALS['woocommerce_product_tabs_lite']
- */
-$GLOBALS['woocommerce_product_tabs_lite'] = new WooCommerceCustomProductTabsLite();
-
 class WooCommerceCustomProductTabsLite {
 
 	private $tab_data = false;
 
 	/** plugin version number */
-	const VERSION = "1.3.1";
+	const VERSION = '1.3.1-1';
+
+	/** @var WooCommerceCustomProductTabsLite single instance of this plugin */
+	protected static $instance;
 
 	/** plugin version name */
 	const VERSION_OPTION_NAME = 'woocommerce_custom_product_tabs_lite_db_version';
@@ -257,6 +253,21 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/**
+	 * Main Custom Product Tabs Lite Instance, ensures only one instance is/can be loaded
+	 *
+	 * @since 1.3.1-1
+	 * @see wc_custom_product_tabs_lite()
+	 * @return WooCommerceCustomProductTabsLite
+	 */
+	public static function instance() {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
+
+
+	/**
 	 * Lazy-load the product_tabs meta data, and return true if it exists,
 	 * false otherwise
 	 *
@@ -309,3 +320,23 @@ class WooCommerceCustomProductTabsLite {
 	}
 
 }
+
+
+/**
+ * Returns the One True Instance of Custom Product Tabs Lite
+ *
+ * @since 1.3.1-1
+ * @return WooCommerceCustomProductTabsLite
+ */
+function wc_custom_product_tabs_lite() {
+	return WooCommerceCustomProductTabsLite::instance();
+}
+
+
+/**
+ * The WooCommerceCustomProductTabsLite global object
+ * @deprecated 1.3.1-1
+ * @name $woocommerce_product_tabs_lite
+ * @global WooCommerceCustomProductTabsLite $GLOBALS['woocommerce_product_tabs_lite']
+ */
+$GLOBALS['woocommerce_product_tabs_lite'] = wc_custom_product_tabs_lite();
