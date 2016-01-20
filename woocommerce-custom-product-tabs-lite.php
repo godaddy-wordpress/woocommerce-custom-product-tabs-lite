@@ -5,7 +5,7 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.3.1-1
+ * Version: 1.4.0
  * Tested up to: 4.4
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
@@ -35,7 +35,7 @@ class WooCommerceCustomProductTabsLite {
 	private $tab_data = false;
 
 	/** plugin version number */
-	const VERSION = '1.3.1-1';
+	const VERSION = '1.4.0';
 
 	/** @var WooCommerceCustomProductTabsLite single instance of this plugin */
 	protected static $instance;
@@ -255,7 +255,7 @@ class WooCommerceCustomProductTabsLite {
 	/**
 	 * Main Custom Product Tabs Lite Instance, ensures only one instance is/can be loaded
 	 *
-	 * @since 1.3.1-1
+	 * @since 1.4.0
 	 * @see wc_custom_product_tabs_lite()
 	 * @return WooCommerceCustomProductTabsLite
 	 */
@@ -325,7 +325,7 @@ class WooCommerceCustomProductTabsLite {
 /**
  * Returns the One True Instance of Custom Product Tabs Lite
  *
- * @since 1.3.1-1
+ * @since 1.4.0
  * @return WooCommerceCustomProductTabsLite
  */
 function wc_custom_product_tabs_lite() {
@@ -335,7 +335,7 @@ function wc_custom_product_tabs_lite() {
 
 /**
  * The WooCommerceCustomProductTabsLite global object
- * @deprecated 1.3.1-1
+ * @deprecated 1.4.0
  * @name $woocommerce_product_tabs_lite
  * @global WooCommerceCustomProductTabsLite $GLOBALS['woocommerce_product_tabs_lite']
  */
