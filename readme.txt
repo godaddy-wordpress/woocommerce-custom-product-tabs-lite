@@ -1,11 +1,11 @@
 === WooCommerce Custom Product Tabs Lite ===
 Contributors: SkyVerge, maxrice, tamarazuk, chasewiseman, nekojira
 Tags: woocommerce, product tabs
-Requires at least: 4.0
-Tested up to: 4.4.x
-Requires WooCommerce at least: 2.3
-Tested WooCommerce up to: 2.5
-Stable tag: 1.4.0
+Requires at least: 4.1
+Tested up to: 4.5.2
+Requires WooCommerce at least: 2.4.13
+Tested WooCommerce up to: 2.6.0
+Stable tag: 1.4.0-1
 
 This plugin extends WooCommerce by allowing a custom product tab to be created with any content.
 
@@ -13,14 +13,14 @@ This plugin extends WooCommerce by allowing a custom product tab to be created w
 
 This plugin extends [WooCommerce](http://www.woothemes.com/woocommerce/) to allow a custom product tab to be added to single product pages with arbitrary content. The new custom tab may contain text, html (such as embedded videos), or shortcodes, and will appear between the "Additional Information" and "Reviews" tabs.
 
-> Requires WooCommerce 2.3 or newer
+> Requires WooCommerce 2.4.13 or newer
 
 = Features =
 
  - Add a single custom tab to each product in your shop
  - Insert any desired content into custom tabs to provide product specifications, shipping info, or more
  - Custom tabs can accept shortcodes or HTML content &ndash; great for embedding a marketing video or inquiry form
- 
+
 = Support Details =
 
 We do support our free plugins and extensions, but please understand that support for premium products takes priority. We typically check the forums every few days (with a maximum delay of one week).
@@ -34,7 +34,7 @@ To easily add multiple tabs, share tabs between products, and more features, ple
  - Check out the pro version at WooThemes: [WooCommerce Tab Manager](http://www.woothemes.com/products/woocommerce-tab-manager/)
  - View more of SkyVerge's [free WooCommerce extensions](http://profiles.wordpress.org/skyverge/)
  - View all [SkyVerge WooCommerce extensions](http://www.skyverge.com/shop/)
- 
+
 Interested in contributing? You can [find the project on GitHub](https://github.com/skyverge/woocommerce-custom-product-tabs-lite) and contributions are welcome :)
 
 == Installation ==
@@ -81,6 +81,10 @@ add_filter( 'woocommerce_custom_product_tabs_lite_title', 'sv_change_custom_tab_
 `
 
 == Changelog ==
+
+= 1.4.0-1 - 2016.05.24 =
+ * Misc - Added support for WooCommerce 2.6
+ * Misc - Removed support for WooCommerce 2.3
 
 = 1.4.0 - 2016.01.20 =
  * Misc - Added support for WooCommerce 2.5
