@@ -5,7 +5,7 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.4.0-1
+ * Version: 1.5.0
  * Tested up to: 4.4
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
@@ -34,7 +34,7 @@ class WooCommerceCustomProductTabsLite {
 	private $tab_data = false;
 
 	/** plugin version number */
-	const VERSION = '1.4.0-1';
+	const VERSION = '1.5.0';
 
 	/** @var WooCommerceCustomProductTabsLite single instance of this plugin */
 	protected static $instance;
@@ -59,24 +59,24 @@ class WooCommerceCustomProductTabsLite {
 	/**
 	 * Cloning instances is forbidden due to singleton pattern.
 	 *
-	 * @since 1.4.0-1
+	 * @since 1.5.0
 	 */
 	public function __clone() {
 
 		/* translators: Placeholders: %s - plugin name */
-		_doing_it_wrong( __FUNCTION__, sprintf( esc_html__( 'You cannot clone instances of %s.', 'woocommerce-custom-product-tabs-lite' ), 'WooCommerce Custom Product Tabs Lite' ), '1.4.0-1' );
+		_doing_it_wrong( __FUNCTION__, sprintf( esc_html__( 'You cannot clone instances of %s.', 'woocommerce-custom-product-tabs-lite' ), 'WooCommerce Custom Product Tabs Lite' ), '1.5.0' );
 	}
 
 
 	/**
 	 * Unserializing instances is forbidden due to singleton pattern.
 	 *
-	 * @since 1.4.0-1
+	 * @since 1.5.0
 	 */
 	public function __wakeup() {
 
 		/* translators: Placeholders: %s - plugin name */
-		_doing_it_wrong( __FUNCTION__, sprintf( esc_html__( 'You cannot unserialize instances of %s.', 'woocommerce-custom-product-tabs-lite' ), 'WooCommerce Custom Product Tabs Lite' ), '1.4.0-1' );
+		_doing_it_wrong( __FUNCTION__, sprintf( esc_html__( 'You cannot unserialize instances of %s.', 'woocommerce-custom-product-tabs-lite' ), 'WooCommerce Custom Product Tabs Lite' ), '1.5.0' );
 	}
 
 
@@ -357,29 +357,9 @@ function wc_custom_product_tabs_lite() {
 
 
 /**
- * Returns the One True Instance of Custom Product Tabs Lite after warning that
- * the global has been deprecated.
- *
- * While the global itself was deprecated in v1.4.0, this function was only
- * added in v1.4.0-1 so we may want to keep the global around for a couple more
- * versions {TZ 2016-05-24}
- *
- * @since 1.4.0-1
- * @return \WooCommerceCustomProductTabsLite
- */
-function wc_custom_product_tabs_lite_deprecated_global() {
-
-	/* @deprecated since 1.4.0 */
-	_deprecated_function( "\$GLOBALS['woocommerce_product_tabs_lite']", '1.4.0', 'wc_custom_product_tabs_lite()' );
-
-	return wc_custom_product_tabs_lite();
-}
-
-
-/**
  * The WooCommerceCustomProductTabsLite global object
  * @deprecated 1.4.0
  * @name $woocommerce_product_tabs_lite
  * @global WooCommerceCustomProductTabsLite $GLOBALS['woocommerce_product_tabs_lite']
  */
-$GLOBALS['woocommerce_product_tabs_lite'] = wc_custom_product_tabs_lite_deprecated_global();
+$GLOBALS['woocommerce_product_tabs_lite'] = wc_custom_product_tabs_lite();
