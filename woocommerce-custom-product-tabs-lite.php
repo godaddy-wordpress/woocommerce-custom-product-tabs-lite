@@ -197,14 +197,30 @@ class WooCommerceCustomProductTabsLite {
 		$tab_data = maybe_unserialize( get_post_meta( $post->ID, 'frs_woo_product_tabs', true ) );
 
 		if ( empty( $tab_data ) ) {
-			$tab_data[] = array( 'title' => '', 'content' => '' );
+			$tab_data[] = array(
+				'title'   => '',
+				'content' => '',
+			);
 		}
 
 		foreach ( $tab_data as $tab ) {
 			// display the custom tab panel
+
 			echo '<div id="woocommerce_product_tabs_lite" class="panel wc-metaboxes-wrapper woocommerce_options_panel">';
-			woocommerce_wp_text_input( array( 'id' => '_wc_custom_product_tabs_lite_tab_title', 'label' => __( 'Tab Title', 'woocommerce-custom-product-tabs-lite' ), 'description' => __( 'Required for tab to be visible', 'woocommerce-custom-product-tabs-lite' ), 'value' => $tab['title'] ) );
-			$this->woocommerce_wp_textarea_input( array( 'id' => '_wc_custom_product_tabs_lite_tab_content', 'label' => __( 'Content', 'woocommerce-custom-product-tabs-lite' ), 'placeholder' => __( 'HTML and text to display.', 'woocommerce-custom-product-tabs-lite' ), 'value' => $tab['content'], 'style' => 'width:70%;height:21.5em;' ) );
+				woocommerce_wp_text_input( array(
+					'id'          => '_wc_custom_product_tabs_lite_tab_title',
+					'label'       => __( 'Tab Title', 'woocommerce-custom-product-tabs-lite' ),
+					'description' => __( 'Required for tab to be visible', 'woocommerce-custom-product-tabs-lite' ),
+					'value'       => $tab['title'],
+				));
+
+				$this->woocommerce_wp_textarea_input( array(
+					'id'          => '_wc_custom_product_tabs_lite_tab_content',
+					'label'       => __( 'Content', 'woocommerce-custom-product-tabs-lite' ),
+					'placeholder' => __( 'HTML and text to display.', 'woocommerce-custom-product-tabs-lite' ),
+					'value'       => $tab['content'],
+					'style'       => 'width:70%;height:21.5em;',
+				));
 			echo '</div>';
 		}
 	}
@@ -248,7 +264,11 @@ class WooCommerceCustomProductTabsLite {
 			}
 
 			// save the data to the database
-			$tab_data[] = array( 'title' => $tab_title, 'id' => $tab_id, 'content' => $tab_content );
+			$tab_data[] = array(
+				'title'   => $tab_title,
+				'id'      => $tab_id,
+				'content' => $tab_content,
+			);
 			update_post_meta( $post_id, 'frs_woo_product_tabs', $tab_data );
 		}
 	}
