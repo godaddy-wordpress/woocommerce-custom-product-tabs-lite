@@ -24,8 +24,9 @@
 
 defined( 'ABSPATH' ) or exit;
 
-// Check if WooCommerce is active and bail if it's not
-if ( ! WooCommerceCustomProductTabsLite::is_woocommerce_active() ) {
+// Check if WooCommerce is active & at least v2.5.5, and bail if it's not
+if ( ! WooCommerceCustomProductTabsLite::is_woocommerce_active() || version_compare( get_option( 'woocommerce_db_version' ), '2.5.5', '<' ) ) {
+	add_action( 'admin_notices', WooCommerceCustomProductTabsLite::render_woocommerce_requirements_notice() );
 	return;
 }
 
@@ -36,11 +37,11 @@ class WooCommerceCustomProductTabsLite {
 	/** plugin version number */
 	const VERSION = '1.6.0-dev';
 
-	/** @var WooCommerceCustomProductTabsLite single instance of this plugin */
-	protected static $instance;
-
 	/** plugin version name */
 	const VERSION_OPTION_NAME = 'woocommerce_custom_product_tabs_lite_db_version';
+
+	/** @var WooCommerceCustomProductTabsLite single instance of this plugin */
+	protected static $instance;
 
 
 	/**
@@ -99,7 +100,7 @@ class WooCommerceCustomProductTabsLite {
 
 		// backend stuff
 		add_action( 'woocommerce_product_write_panel_tabs', array( $this, 'product_write_panel_tab' ) );
-		add_action( 'woocommerce_product_write_panels',     array( $this, 'product_write_panel' ) );
+		add_action( 'woocommerce_product_data_panels',      array( $this, 'product_write_panel' ) );
 		add_action( 'woocommerce_process_product_meta',     array( $this, 'product_save_data' ), 10, 2 );
 
 		// frontend stuff
@@ -183,7 +184,7 @@ class WooCommerceCustomProductTabsLite {
 	 * Adds a new tab to the Product Data postbox in the admin product interface
 	 */
 	public function product_write_panel_tab() {
-		echo "<li class=\"product_tabs_lite_tab\"><a href=\"#woocommerce_product_tabs_lite\">" . __( 'Custom Tab', 'woocommerce-custom-product-tabs-lite' ) . "</a></li>";
+		echo "<li class=\"product_tabs_lite_tab\"><a href=\"#woocommerce_product_tabs_lite\"><span>" . __( 'Custom Tab', 'woocommerce-custom-product-tabs-lite' ) . "</span></a></li>";
 	}
 
 
@@ -198,6 +199,9 @@ class WooCommerceCustomProductTabsLite {
 		$tab_data = maybe_unserialize( get_post_meta( $post->ID, 'frs_woo_product_tabs', true ) );
 
 		if ( empty( $tab_data ) ) {
+			// start with an array for PHP 7.1+
+			$tab_data = array();
+
 			$tab_data[] = array(
 				'title'   => '',
 				'content' => '',
@@ -220,7 +224,7 @@ class WooCommerceCustomProductTabsLite {
 					'label'       => __( 'Content', 'woocommerce-custom-product-tabs-lite' ),
 					'placeholder' => __( 'HTML and text to display.', 'woocommerce-custom-product-tabs-lite' ),
 					'value'       => $tab['content'],
-					'style'       => 'width:70%;height:21.5em;',
+					'style'       => 'width:70%;height:14.5em;',
 				));
 			echo '</div>';
 		}
@@ -228,7 +232,7 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/**
-	 * Saves the data inputed into the product boxes, as post meta data
+	 * Saves the data input into the product boxes, as post meta data
 	 * identified by the name 'frs_woo_product_tabs'
 	 *
 	 * @param int $post_id the post (product) identifier
@@ -236,31 +240,43 @@ class WooCommerceCustomProductTabsLite {
 	 */
 	public function product_save_data( $post_id, $post ) {
 
-		$tab_title = stripslashes( $_POST['_wc_custom_product_tabs_lite_tab_title'] );
+		$tab_title   = stripslashes( $_POST['_wc_custom_product_tabs_lite_tab_title'] );
 		$tab_content = stripslashes( $_POST['_wc_custom_product_tabs_lite_tab_content'] );
 
 		if ( empty( $tab_title ) && empty( $tab_content ) && get_post_meta( $post_id, 'frs_woo_product_tabs', true ) ) {
+
 			// clean up if the custom tabs are removed
 			delete_post_meta( $post_id, 'frs_woo_product_tabs' );
+
 		} elseif ( ! empty( $tab_title ) || ! empty( $tab_content ) ) {
+
 			$tab_data = array();
 
 			$tab_id = '';
+
 			if ( $tab_title ) {
+
 				if ( strlen( $tab_title ) != strlen( utf8_encode( $tab_title ) ) ) {
+
 					// can't have titles with utf8 characters as it breaks the tab-switching javascript
 					$tab_id = "tab-custom";
+
 				} else {
+
 					// convert the tab title into an id string
 					$tab_id = strtolower( $tab_title );
-					$tab_id = preg_replace( "/[^\w\s]/", '', $tab_id );
+
 					// remove non-alphas, numbers, underscores or whitespace
-					$tab_id = preg_replace( "/_+/", ' ', $tab_id );
+					$tab_id = preg_replace( "/[^\w\s]/", '', $tab_id );
+
 					// replace all underscores with single spaces
-					$tab_id = preg_replace( "/\s+/", '-', $tab_id );
+					$tab_id = preg_replace( "/_+/", ' ', $tab_id );
+
 					// replace all multiple spaces with single dashes
-					$tab_id = 'tab-' . $tab_id;
+					$tab_id = preg_replace( "/\s+/", '-', $tab_id );
+
 					// prepend with 'tab-' string
+					$tab_id = 'tab-' . $tab_id;
 				}
 			}
 
@@ -270,18 +286,25 @@ class WooCommerceCustomProductTabsLite {
 				'id'      => $tab_id,
 				'content' => $tab_content,
 			);
+
 			update_post_meta( $post_id, 'frs_woo_product_tabs', $tab_data );
 		}
 	}
 
 
+	/**
+	 * Helper function to generate a text area input for the custom tab
+	 *
+	 * @since 1.0.0
+	 * @param array $field the field data
+	 */
 	private function woocommerce_wp_textarea_input( $field ) {
 		global $thepostid, $post;
 
-		if ( ! $thepostid ) $thepostid = $post->ID;
-		if ( ! isset( $field['placeholder'] ) ) $field['placeholder'] = '';
-		if ( ! isset( $field['class'] ) ) $field['class'] = 'short';
-		if ( ! isset( $field['value'] ) ) $field['value'] = get_post_meta( $thepostid, $field['id'], true );
+		$thepostid            = ! $thepostid                   ? $post->ID             : $thepostid;
+		$field['placeholder'] = isset( $field['placeholder'] ) ? $field['placeholder'] : '';
+		$field['class']       = isset( $field['class'] )       ? $field['class']       : 'short';
+		$field['value']       = isset( $field['value'] )       ? $field['value']       : get_post_meta( $thepostid, $field['id'], true );
 
 		echo '<p class="form-field ' . $field['id'] . '_field"><label style="display:block;" for="' . $field['id'] . '">' . $field['label'] . '</label><textarea class="' . $field['class'] . '" name="' . $field['id'] . '" id="' . $field['id'] . '" placeholder="' . $field['placeholder'] . '" rows="2" cols="20"' . (isset( $field['style'] ) ? ' style="' . $field['style'] . '"' : '') . '>' . esc_textarea( $field['value'] ) . '</textarea> ';
 
@@ -318,9 +341,11 @@ class WooCommerceCustomProductTabsLite {
 	 * @return true if there is custom tab data, false otherwise
 	 */
 	private function product_has_custom_tabs( $product ) {
+
 		if ( false === $this->tab_data ) {
-			$this->tab_data = maybe_unserialize( get_post_meta( $product->id, 'frs_woo_product_tabs', true ) );
+			$this->tab_data = maybe_unserialize( get_post_meta( $product->get_id(), 'frs_woo_product_tabs', true ) );
 		}
+
 		// tab must at least have a title to exist
 		return ! empty( $this->tab_data ) && ! empty( $this->tab_data[0] ) && ! empty( $this->tab_data[0]['title'] );
 	}
@@ -329,7 +354,7 @@ class WooCommerceCustomProductTabsLite {
 	/**
 	 * Checks if WooCommerce is active
 	 *
-	 * @since  1.0
+	 * @since  1.0.0
 	 * @return bool true if WooCommerce is active, false otherwise
 	 */
 	public static function is_woocommerce_active() {
@@ -344,15 +369,35 @@ class WooCommerceCustomProductTabsLite {
 	}
 
 
+	/**
+	 * Renders a notice when WooCommerce is inactive or version is outdated.
+	 *
+	 * @since 1.6.0-dev
+	 */
+	public static function render_woocommerce_requirements_notice() {
+
+		$message = sprintf(
+			/* translators: %1$s and %2$s are <strong> tags. %3$s and %4$s are <a> tags */
+			esc_html__( '%1$sWooCommerce Custom Product Tabs Lite is inactive.%2$s This plugin requires WooCommerce 2.5.5 or newer. Please %3$sinstall WooCommerce version 2.5.5 or newer%4$s', 'woocommerce-custom-product-tabs-lite' ),
+			'<strong>',
+			'</strong>',
+			'<a href="' . admin_url( 'plugins.php' ) . '">',
+			'&nbsp;&raquo;</a>'
+		);
+
+		printf( '<div class="error"><p>%s</p></div>', $message );
+	}
+
+
 	/** Lifecycle methods ******************************************************/
 
 
 	/**
 	 * Run every time.  Used since the activation hook is not executed when updating a plugin
+	 *
+	 * @since 1.0.0
 	 */
 	private function install() {
-
-		global $wpdb;
 
 		$installed_version = get_option( self::VERSION_OPTION_NAME );
 
