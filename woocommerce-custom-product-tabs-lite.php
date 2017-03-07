@@ -5,12 +5,12 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.5.0
- * Tested up to: 4.4
+ * Version: 1.6.0-dev
+ * Tested up to: 4.7.3
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
  *
- * Copyright: (c) 2012-2016 SkyVerge, Inc. (info@skyverge.com)
+ * Copyright: (c) 2012-2017, SkyVerge, Inc. (info@skyverge.com)
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -18,7 +18,7 @@
  * @package     WC-Custom-Product-Tabs-Lite
  * @author      SkyVerge
  * @category    Plugin
- * @copyright   Copyright (c) 2012-2016, SkyVerge, Inc.
+ * @copyright   Copyright (c) 2012-2017, SkyVerge, Inc.
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -34,7 +34,7 @@ class WooCommerceCustomProductTabsLite {
 	private $tab_data = false;
 
 	/** plugin version number */
-	const VERSION = '1.5.0';
+	const VERSION = '1.6.0-dev';
 
 	/** @var WooCommerceCustomProductTabsLite single instance of this plugin */
 	protected static $instance;
@@ -48,8 +48,11 @@ class WooCommerceCustomProductTabsLite {
 	 * WooCommerce is known to be active and initialized
 	 */
 	public function __construct() {
+
 		// Installation
-		if ( is_admin() && ! defined( 'DOING_AJAX' ) ) $this->install();
+		if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
+			$this->install();
+		}
 
 		add_action( 'init',             array( $this, 'load_translation' ) );
 		add_action( 'woocommerce_init', array( $this, 'init' ) );
@@ -62,7 +65,6 @@ class WooCommerceCustomProductTabsLite {
 	 * @since 1.5.0
 	 */
 	public function __clone() {
-
 		/* translators: Placeholders: %s - plugin name */
 		_doing_it_wrong( __FUNCTION__, sprintf( esc_html__( 'You cannot clone instances of %s.', 'woocommerce-custom-product-tabs-lite' ), 'WooCommerce Custom Product Tabs Lite' ), '1.5.0' );
 	}
@@ -74,7 +76,6 @@ class WooCommerceCustomProductTabsLite {
 	 * @since 1.5.0
 	 */
 	public function __wakeup() {
-
 		/* translators: Placeholders: %s - plugin name */
 		_doing_it_wrong( __FUNCTION__, sprintf( esc_html__( 'You cannot unserialize instances of %s.', 'woocommerce-custom-product-tabs-lite' ), 'WooCommerce Custom Product Tabs Lite' ), '1.5.0' );
 	}
@@ -86,7 +87,6 @@ class WooCommerceCustomProductTabsLite {
 	 * @since 1.2.5
 	 */
 	public function load_translation() {
-
 		// localization
 		load_plugin_textdomain( 'woocommerce-custom-product-tabs-lite', false, dirname( plugin_basename( __FILE__ ) ) . '/i18n/languages' );
 	}
@@ -96,6 +96,7 @@ class WooCommerceCustomProductTabsLite {
 	 * Init WooCommerce Product Tabs Lite extension once we know WooCommerce is active
 	 */
 	public function init() {
+
 		// backend stuff
 		add_action( 'woocommerce_product_write_panel_tabs', array( $this, 'product_write_panel_tab' ) );
 		add_action( 'woocommerce_product_write_panels',     array( $this, 'product_write_panel' ) );
