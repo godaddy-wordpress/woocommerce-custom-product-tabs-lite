@@ -1,11 +1,11 @@
 === WooCommerce Custom Product Tabs Lite ===
-Contributors: SkyVerge, maxrice, tamarazuk, chasewiseman, nekojira, beka.rice
+Contributors: skyverge, maxrice, tamarazuk, chasewiseman, nekojira, beka.rice
 Tags: woocommerce, product tabs, custom tab, woo commerce tab
 Requires at least: 4.1
 Tested up to: 4.7.3
-Requires WooCommerce at least: 2.5.5
-Tested WooCommerce up to: 2.7.0
 Stable tag: 1.6.0-dev
+WC requires at least: 2.5.5
+WC tested up to: 3.0
 
 This plugin extends WooCommerce by allowing a custom product tab to be created with any content.
 
@@ -19,7 +19,7 @@ This plugin extends [WooCommerce](http://woocommerce.com/) to allow a custom pro
 
  - Add a single custom tab to each product in your shop
  - Insert any desired content into custom tabs to provide product specifications, shipping info, or more
- - Custom tabs can accept shortcodes or HTML content &ndash; great for embedding a marketing video or inquiry form
+ - Custom tabs can accept shortcodes or HTML content &ndash; great for embedding a marketing video or inquiry form!
 
 = Support Details =
 
@@ -83,7 +83,7 @@ add_filter( 'woocommerce_custom_product_tabs_lite_title', 'sv_change_custom_tab_
 == Changelog ==
 
 = 1.6.0-dev - 2017.nn.nn =
- * Misc - Added support for WooCommerce 2.7
+ * Misc - Added support for WooCommerce 3.0
  * Misc - Removed support for WooCommerce 2.4
 
 = 1.5.0 - 2016.05.24 =

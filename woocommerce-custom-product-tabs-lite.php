@@ -181,7 +181,9 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/**
-	 * Adds a new tab to the Product Data postbox in the admin product interface
+	 * Adds a new tab to the Product Data postbox in the admin product interface.
+	 *
+	 * @since 1.0.0
 	 */
 	public function product_write_panel_tab() {
 		echo "<li class=\"product_tabs_lite_tab\"><a href=\"#woocommerce_product_tabs_lite\"><span>" . __( 'Custom Tab', 'woocommerce-custom-product-tabs-lite' ) . "</span></a></li>";
@@ -190,15 +192,19 @@ class WooCommerceCustomProductTabsLite {
 
 	/**
 	 * Adds the panel to the Product Data postbox in the product interface
+	 *
+	 * TODO: We likely want to migrate getting meta to a product CRUD method post WC 3.1 {BR 2017-03-21}
+	 *
+	 * @since 1.0.0
 	 */
 	public function product_write_panel() {
-		global $post;
-		// the product
+		global $post; // the product
 
 		// pull the custom tab data out of the database
 		$tab_data = maybe_unserialize( get_post_meta( $post->ID, 'frs_woo_product_tabs', true ) );
 
 		if ( empty( $tab_data ) ) {
+
 			// start with an array for PHP 7.1+
 			$tab_data = array();
 
@@ -235,6 +241,10 @@ class WooCommerceCustomProductTabsLite {
 	 * Saves the data input into the product boxes, as post meta data
 	 * identified by the name 'frs_woo_product_tabs'
 	 *
+	 * TODO: We likely want to migrate getting / setting meta to a product CRUD method post WC 3.1 {BR 2017-03-21}
+	 *
+	 * @since 1.0.0
+	 *
 	 * @param int $post_id the post (product) identifier
 	 * @param stdClass $post the post (product)
 	 */
@@ -251,8 +261,7 @@ class WooCommerceCustomProductTabsLite {
 		} elseif ( ! empty( $tab_title ) || ! empty( $tab_content ) ) {
 
 			$tab_data = array();
-
-			$tab_id = '';
+			$tab_id   = '';
 
 			if ( $tab_title ) {
 
@@ -294,6 +303,8 @@ class WooCommerceCustomProductTabsLite {
 
 	/**
 	 * Helper function to generate a text area input for the custom tab
+	 *
+	 * TODO: We likely want to migrate getting meta to a product CRUD method post WC 3.1 {BR 2017-03-21}
 	 *
 	 * @since 1.0.0
 	 * @param array $field the field data
@@ -337,6 +348,8 @@ class WooCommerceCustomProductTabsLite {
 	/**
 	 * Lazy-load the product_tabs meta data, and return true if it exists,
 	 * false otherwise
+	 *
+	 * TODO: We likely want to migrate getting meta to a product CRUD method post WC 3.1 {BR 2017-03-21}
 	 *
 	 * @return true if there is custom tab data, false otherwise
 	 */
@@ -424,6 +437,9 @@ function wc_custom_product_tabs_lite() {
 
 /**
  * The WooCommerceCustomProductTabsLite global object
+ *
+ * TODO: Remove the global with WC 3.1 compat {BR 2017-03-21}
+ *
  * @deprecated 1.4.0
  * @name $woocommerce_product_tabs_lite
  * @global WooCommerceCustomProductTabsLite $GLOBALS['woocommerce_product_tabs_lite']
