@@ -1,25 +1,25 @@
 === WooCommerce Custom Product Tabs Lite ===
-Contributors: SkyVerge, maxrice, tamarazuk, chasewiseman, nekojira
-Tags: woocommerce, product tabs
+Contributors: skyverge, maxrice, tamarazuk, chasewiseman, nekojira, beka.rice
+Tags: woocommerce, product tabs, custom tab, woo commerce tab
 Requires at least: 4.1
-Tested up to: 4.5.2
-Requires WooCommerce at least: 2.4.13
-Tested WooCommerce up to: 2.6.0
-Stable tag: 1.5.0
+Tested up to: 4.7.3
+WC requires at least: 2.5.5
+WC tested up to: 3.0
+Stable tag: 1.6.0
 
 This plugin extends WooCommerce by allowing a custom product tab to be created with any content.
 
 == Description ==
 
-This plugin extends [WooCommerce](http://www.woothemes.com/woocommerce/) to allow a custom product tab to be added to single product pages with arbitrary content. The new custom tab may contain text, html (such as embedded videos), or shortcodes, and will appear between the "Additional Information" and "Reviews" tabs.
+This plugin extends [WooCommerce](http://woocommerce.com/) to allow a custom product tab to be added to single product pages with arbitrary content. The new custom tab may contain text, html (such as embedded videos), or shortcodes, and will appear between the "Additional Information" and "Reviews" tabs.
 
-> Requires WooCommerce 2.4.13 or newer
+> Requires WooCommerce 2.5.5 or newer
 
 = Features =
 
  - Add a single custom tab to each product in your shop
  - Insert any desired content into custom tabs to provide product specifications, shipping info, or more
- - Custom tabs can accept shortcodes or HTML content &ndash; great for embedding a marketing video or inquiry form
+ - Custom tabs can accept shortcodes or HTML content &ndash; great for embedding a marketing video or inquiry form!
 
 = Support Details =
 
@@ -27,11 +27,11 @@ We do support our free plugins and extensions, but please understand that suppor
 
 = WooCommerce Tab Manager =
 
-To easily add multiple tabs, share tabs between products, and more features, please consider upgrading to the premium [WooCommerce Tab Manager](http://www.woothemes.com/products/woocommerce-tab-manager/), available from the official WooThemes store.
+To easily add multiple tabs, share tabs between products, and more features, please consider upgrading to the premium [WooCommerce Tab Manager](http://www.woothemes.com/products/woocommerce-tab-manager/), available from the official WooCommerce.com store.
 
 = More Details =
  - See the [product page](http://www.skyverge.com/product/woocommerce-custom-product-tabs-lite/) for full details.
- - Check out the pro version at WooThemes: [WooCommerce Tab Manager](http://www.woothemes.com/products/woocommerce-tab-manager/)
+ - Check out the pro version at WooThemes: [WooCommerce Tab Manager](http://woocommerce.com/products/woocommerce-tab-manager/)
  - View more of SkyVerge's [free WooCommerce extensions](http://profiles.wordpress.org/skyverge/)
  - View all [SkyVerge WooCommerce extensions](http://www.skyverge.com/shop/)
 
@@ -81,6 +81,10 @@ add_filter( 'woocommerce_custom_product_tabs_lite_title', 'sv_change_custom_tab_
 `
 
 == Changelog ==
+
+= 1.6.0 - 2017.03.23 =
+ * Misc - Added support for WooCommerce 3.0
+ * Misc - Removed support for WooCommerce 2.4
 
 = 1.5.0 - 2016.05.24 =
  * Misc - Added support for WooCommerce 2.6
