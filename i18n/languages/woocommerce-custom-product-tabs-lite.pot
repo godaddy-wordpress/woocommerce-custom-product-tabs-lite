@@ -2,7 +2,7 @@
 # This file is distributed under the GNU General Public License v3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Custom Product Tabs Lite 1.6.0\n"
+"Project-Id-Version: WooCommerce Custom Product Tabs Lite 1.6.1\n"
 "Report-Msgid-Bugs-To: "
 "https://github.com/skyverge/woocommerce-custom-product-tabs-lite/issues\n"
 "POT-Creation-Date: 2014-09-05 04:31:12+00:00\n"
@@ -23,27 +23,27 @@ msgstr ""
 msgid "You cannot unserialize instances of %s."
 msgstr ""
 
-#: woocommerce-custom-product-tabs-lite.php:189
+#: woocommerce-custom-product-tabs-lite.php:194
 msgid "Custom Tab"
 msgstr ""
 
-#: woocommerce-custom-product-tabs-lite.php:223
+#: woocommerce-custom-product-tabs-lite.php:228
 msgid "Tab Title"
 msgstr ""
 
-#: woocommerce-custom-product-tabs-lite.php:224
+#: woocommerce-custom-product-tabs-lite.php:229
 msgid "Required for tab to be visible"
 msgstr ""
 
-#: woocommerce-custom-product-tabs-lite.php:230
+#: woocommerce-custom-product-tabs-lite.php:235
 msgid "Content"
 msgstr ""
 
-#: woocommerce-custom-product-tabs-lite.php:231
+#: woocommerce-custom-product-tabs-lite.php:236
 msgid "HTML and text to display."
 msgstr ""
 
-#: woocommerce-custom-product-tabs-lite.php:394
+#: woocommerce-custom-product-tabs-lite.php:400
 #. translators: %1$s and %2$s are <strong> tags. %3$s and %4$s are <a> tags
 msgid ""
 "%1$sWooCommerce Custom Product Tabs Lite is inactive.%2$s This plugin "
