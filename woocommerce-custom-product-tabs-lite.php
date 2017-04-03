@@ -5,7 +5,7 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.6.0
+ * Version: 1.6.1
  * Tested up to: 4.7.3
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
@@ -35,7 +35,7 @@ class WooCommerceCustomProductTabsLite {
 	private $tab_data = false;
 
 	/** plugin version number */
-	const VERSION = '1.6.0';
+	const VERSION = '1.6.1';
 
 	/** plugin version name */
 	const VERSION_OPTION_NAME = 'woocommerce_custom_product_tabs_lite_db_version';
@@ -133,7 +133,12 @@ class WooCommerceCustomProductTabsLite {
 	public function add_custom_product_tabs( $tabs ) {
 		global $product;
 
+		if ( ! $product instanceof WC_Product ) {
+			return $tabs;
+		}
+
 		if ( $this->product_has_custom_tabs( $product ) ) {
+
 			foreach ( $this->tab_data as $tab ) {
 				$tab_title = __( $tab['title'], 'woocommerce-custom-product-tabs-lite' );
 				$tabs[ $tab['id'] ] = array(
@@ -351,6 +356,7 @@ class WooCommerceCustomProductTabsLite {
 	 *
 	 * TODO: We likely want to migrate getting meta to a product CRUD method post WC 3.1 {BR 2017-03-21}
 	 *
+	 * @param \WC_Product $product the product object
 	 * @return true if there is custom tab data, false otherwise
 	 */
 	private function product_has_custom_tabs( $product ) {
