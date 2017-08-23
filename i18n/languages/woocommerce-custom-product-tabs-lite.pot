@@ -2,7 +2,7 @@
 # This file is distributed under the GNU General Public License v3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Custom Product Tabs Lite 1.6.1\n"
+"Project-Id-Version: WooCommerce Custom Product Tabs Lite 1.6.2\n"
 "Report-Msgid-Bugs-To: "
 "https://github.com/skyverge/woocommerce-custom-product-tabs-lite/issues\n"
 "POT-Creation-Date: 2014-09-05 04:31:12+00:00\n"
@@ -13,42 +13,43 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: woocommerce-custom-product-tabs-lite.php:70
+#: woocommerce-custom-product-tabs-lite.php:77
 #. translators: Placeholders: %s - plugin name
 msgid "You cannot clone instances of %s."
 msgstr ""
 
-#: woocommerce-custom-product-tabs-lite.php:81
+#: woocommerce-custom-product-tabs-lite.php:88
 #. translators: Placeholders: %s - plugin name
 msgid "You cannot unserialize instances of %s."
 msgstr ""
 
-#: woocommerce-custom-product-tabs-lite.php:194
+#: woocommerce-custom-product-tabs-lite.php:201
 msgid "Custom Tab"
 msgstr ""
 
-#: woocommerce-custom-product-tabs-lite.php:228
+#: woocommerce-custom-product-tabs-lite.php:235
 msgid "Tab Title"
 msgstr ""
 
-#: woocommerce-custom-product-tabs-lite.php:229
+#: woocommerce-custom-product-tabs-lite.php:236
 msgid "Required for tab to be visible"
 msgstr ""
 
-#: woocommerce-custom-product-tabs-lite.php:235
+#: woocommerce-custom-product-tabs-lite.php:242
 msgid "Content"
 msgstr ""
 
-#: woocommerce-custom-product-tabs-lite.php:236
+#: woocommerce-custom-product-tabs-lite.php:243
 msgid "HTML and text to display."
 msgstr ""
 
-#: woocommerce-custom-product-tabs-lite.php:400
-#. translators: %1$s and %2$s are <strong> tags. %3$s and %4$s are <a> tags
+#: woocommerce-custom-product-tabs-lite.php:407
+#. translators: Placeholders: %1$s - <strong>, %2$s - </strong>, %3$s + %5$s -
+#. <a> tags, %4$s - </a>
 msgid ""
 "%1$sWooCommerce Custom Product Tabs Lite is inactive.%2$s This plugin "
-"requires WooCommerce 2.5.5 or newer. Please %3$sinstall WooCommerce version "
-"2.5.5 or newer%4$s"
+"requires WooCommerce 2.5.5 or newer. Please %3$sinstall WooCommerce 2.5.5 "
+"or newer%4$s, or %5$srun the WooCommerce database upgrade%4$s."
 msgstr ""
 
 #. Plugin Name of the plugin/theme
