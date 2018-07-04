@@ -208,15 +208,15 @@ class WooCommerceCustomProductTabsLite {
 	/**
 	 * Adds the panel to the Product Data postbox in the product interface
 	 *
-	 * TODO: We likely want to migrate getting meta to a product CRUD method post WC 3.1 {BR 2017-03-21}
-	 *
 	 * @since 1.0.0
 	 */
 	public function product_write_panel() {
-		global $post; // the product
+		global $post;
+
+		$product = wc_get_product( $post );
 
 		// pull the custom tab data out of the database
-		$tab_data = maybe_unserialize( get_post_meta( $post->ID, 'frs_woo_product_tabs', true ) );
+		$tab_data = self::get_product_meta( $product, 'frs_woo_product_tabs' );
 
 		if ( empty( $tab_data ) ) {
 
@@ -240,7 +240,7 @@ class WooCommerceCustomProductTabsLite {
 					'value'       => $tab['title'],
 				));
 
-				$this->woocommerce_wp_textarea_input( array(
+				woocommerce_wp_textarea_input( array(
 					'id'          => '_wc_custom_product_tabs_lite_tab_content',
 					'label'       => __( 'Content', 'woocommerce-custom-product-tabs-lite' ),
 					'placeholder' => __( 'HTML and text to display.', 'woocommerce-custom-product-tabs-lite' ),
@@ -256,8 +256,6 @@ class WooCommerceCustomProductTabsLite {
 	 * Saves the data input into the product boxes, as post meta data
 	 * identified by the name 'frs_woo_product_tabs'
 	 *
-	 * TODO: We likely want to migrate getting / setting meta to a product CRUD method post WC 3.1 {BR 2017-03-21}
-	 *
 	 * @since 1.0.0
 	 *
 	 * @param int $post_id the post (product) identifier
@@ -267,11 +265,16 @@ class WooCommerceCustomProductTabsLite {
 
 		$tab_title   = stripslashes( $_POST['_wc_custom_product_tabs_lite_tab_title'] );
 		$tab_content = stripslashes( $_POST['_wc_custom_product_tabs_lite_tab_content'] );
+		$product     = wc_get_product( $post_id );
 
-		if ( empty( $tab_title ) && empty( $tab_content ) && get_post_meta( $post_id, 'frs_woo_product_tabs', true ) ) {
+		if ( empty( $tab_title ) && empty( $tab_content ) && self::get_product_meta( $product, 'frs_woo_product_tabs' ) ) {
 
 			// clean up if the custom tabs are removed
-			delete_post_meta( $post_id, 'frs_woo_product_tabs' );
+			self::delete_product_meta( $product, 'frs_woo_product_tabs' );
+
+			if ( self::is_wc_version_gte_3_0() ) {
+				$product->save();
+			}
 
 		} elseif ( ! empty( $tab_title ) || ! empty( $tab_content ) ) {
 
@@ -311,34 +314,12 @@ class WooCommerceCustomProductTabsLite {
 				'content' => $tab_content,
 			);
 
-			update_post_meta( $post_id, 'frs_woo_product_tabs', $tab_data );
+			self::update_product_meta( $product, 'frs_woo_product_tabs', $tab_data );
+
+			if ( self::is_wc_version_gte_3_0() ) {
+				$product->save();
+			}
 		}
-	}
-
-
-	/**
-	 * Helper function to generate a text area input for the custom tab
-	 *
-	 * TODO: We likely want to migrate getting meta to a product CRUD method post WC 3.1 {BR 2017-03-21}
-	 *
-	 * @since 1.0.0
-	 * @param array $field the field data
-	 */
-	private function woocommerce_wp_textarea_input( $field ) {
-		global $thepostid, $post;
-
-		$thepostid            = ! $thepostid                   ? $post->ID             : $thepostid;
-		$field['placeholder'] = isset( $field['placeholder'] ) ? $field['placeholder'] : '';
-		$field['class']       = isset( $field['class'] )       ? $field['class']       : 'short';
-		$field['value']       = isset( $field['value'] )       ? $field['value']       : get_post_meta( $thepostid, $field['id'], true );
-
-		echo '<p class="form-field ' . $field['id'] . '_field"><label style="display:block;" for="' . $field['id'] . '">' . $field['label'] . '</label><textarea class="' . $field['class'] . '" name="' . $field['id'] . '" id="' . $field['id'] . '" placeholder="' . $field['placeholder'] . '" rows="2" cols="20"' . (isset( $field['style'] ) ? ' style="' . $field['style'] . '"' : '') . '>' . esc_textarea( $field['value'] ) . '</textarea> ';
-
-		if ( isset( $field['description'] ) && $field['description'] ) {
-			echo '<span class="description">' . $field['description'] . '</span>';
-		}
-
-		echo '</p>';
 	}
 
 
@@ -364,19 +345,110 @@ class WooCommerceCustomProductTabsLite {
 	 * Lazy-load the product_tabs meta data, and return true if it exists,
 	 * false otherwise
 	 *
-	 * TODO: We likely want to migrate getting meta to a product CRUD method post WC 3.1 {BR 2017-03-21}
-	 *
 	 * @param \WC_Product $product the product object
 	 * @return true if there is custom tab data, false otherwise
 	 */
 	private function product_has_custom_tabs( $product ) {
 
 		if ( false === $this->tab_data ) {
-			$this->tab_data = maybe_unserialize( get_post_meta( $product->get_id(), 'frs_woo_product_tabs', true ) );
+			$this->tab_data = maybe_unserialize( self::get_product_meta( $product, 'frs_woo_product_tabs' ) );
 		}
 
 		// tab must at least have a title to exist
 		return ! empty( $this->tab_data ) && ! empty( $this->tab_data[0] ) && ! empty( $this->tab_data[0]['title'] );
+	}
+
+
+	/**
+	 * Helper method to update product meta pre and post WC 3.0.
+	 *
+	 * TODO: Remove this when WooCommerce 3.0+ is required and remove helpers {BR 2018-04-20}
+	 *
+	 * @since 1.6.3-dev.1
+	 *
+	 * @param \WC_Product $product the product object
+	 * @param string $key the meta key
+	 * @param mixed $value the meta value
+	 * @return mixed the product property
+	 */
+	protected static function update_product_meta( $product, $key = '', $value = '' ) {
+
+		if ( self::is_wc_version_gte_3_0() ) {
+			$value = $product->update_meta_data( $key, $value );
+		} else {
+			$value = update_post_meta( $product->get_id(), $key, $value );
+		}
+
+		return $value;
+	}
+
+
+	/**
+	 * Helper method to delete product meta pre and post WC 3.0.
+	 *
+	 * TODO: Remove this when WooCommerce 3.0+ is required and remove helpers {BR 2018-04-20}
+	 *
+	 * @since 1.6.3-dev.1
+	 *
+	 * @param \WC_Product $product the product object
+	 * @param string $key the meta key
+	 */
+	protected static function delete_product_meta( $product, $key = '' ) {
+
+		if ( self::is_wc_version_gte_3_0() ) {
+			$product->delete_meta_data( $key );
+		} else {
+			delete_post_meta( $product->get_id(), $key );
+		}
+	}
+
+
+	/**
+	 * Helper method to get product meta pre and post WC 3.0.
+	 *
+	 * TODO: Remove this when WooCommerce 3.0+ is required and remove helpers {BR 2018-04-20}
+	 *
+	 * @since 1.6.3-dev.1
+	 *
+	 * @param \WC_Product $product the product object
+	 * @param string $key the meta key
+	 * @param bool $single whether to get the meta as a single item. Defaults to `true`
+	 * @param string $context if 'view' then the value will be filtered
+	 * @return mixed the product property
+	 */
+	protected static function get_product_meta( $product, $key = '', $single = true, $context = 'edit' ) {
+
+		if ( self::is_wc_version_gte_3_0() ) {
+			$value = $product->get_meta( $key, $single, $context );
+		} else {
+			$value = get_post_meta( $product->get_id(), $key, $single );
+		}
+
+		return $value;
+	}
+
+
+	/**
+	 * Helper method to get the version of the currently installed WooCommerce
+	 *
+	 * @since 1.6.3-dev.1
+	 *
+	 * @return string woocommerce version number or null
+	 */
+	private static function get_wc_version() {
+		return defined( 'WC_VERSION' ) && WC_VERSION ? WC_VERSION : null;
+	}
+
+
+	/**
+	 * Returns true if the installed version of WooCommerce is 3.0 or greater
+	 *
+	 * @since 1.6.3-dev.1
+	 *
+	 * @return boolean true if the installed version of WooCommerce is 3.0 or greater
+	 */
+	private static function is_wc_version_gte_3_0() {
+		return self::get_wc_version() && version_compare( self::get_wc_version(), '3.0', '>=' );
 	}
 
 
