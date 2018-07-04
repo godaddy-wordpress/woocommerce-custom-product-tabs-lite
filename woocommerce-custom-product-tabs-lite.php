@@ -27,28 +27,31 @@
 
 defined( 'ABSPATH' ) or exit;
 
-// Check if WooCommerce is active & at least v2.5.5, and bail if it's not
-if ( ! WooCommerceCustomProductTabsLite::is_woocommerce_active() || version_compare( get_option( 'woocommerce_db_version' ), '2.5.5', '<' ) ) {
+// Check if WooCommerce is active & at least the minimum version, and bail if it's not
+if ( ! WooCommerceCustomProductTabsLite::is_plugin_active( 'woocommerce.php' ) || version_compare( get_option( 'woocommerce_db_version' ), WooCommerceCustomProductTabsLite::MIN_WOOCOMMERCE_VERSION, '<' ) ) {
 	add_action( 'admin_notices', array( 'WooCommerceCustomProductTabsLite', 'render_woocommerce_requirements_notice' ) );
 	return;
 }
 
 /**
- * Main plugin class WooCommerceCustomProductTabsLite
+ * Main plugin class WooCommerceCustomProductTabsLite.
  *
  * @since 1.0.0
  */
 class WooCommerceCustomProductTabsLite {
 
 
-	/** @var bool|array tab data */
-	private $tab_data = false;
-
 	/** plugin version number */
-	const VERSION = '1.6.2';
+	const VERSION = '1.6.3-dev.1';
+
+	/** required WooCommerce version number */
+	const MIN_WOOCOMMERCE_VERSION = '2.6.14';
 
 	/** plugin version name */
 	const VERSION_OPTION_NAME = 'woocommerce_custom_product_tabs_lite_db_version';
+
+	/** @var bool|array tab data */
+	private $tab_data = false;
 
 	/** @var WooCommerceCustomProductTabsLite single instance of this plugin */
 	protected static $instance;
@@ -456,17 +459,52 @@ class WooCommerceCustomProductTabsLite {
 	 * Checks if WooCommerce is active
 	 *
 	 * @since  1.0.0
+	 * @deprecated 1.6.3-dev.1
+	 *
 	 * @return bool true if WooCommerce is active, false otherwise
 	 */
 	public static function is_woocommerce_active() {
 
+		_deprecated_function( 'WooCommerceCustomProductTabsLite::is_woocommerce_active', '1.6.3-dev.1', 'WooCommerceCustomProductTabsLite::is_plugin_active' );
+		return self::is_plugin_active( 'woocommerce.php' );
+	}
+
+
+	/**
+	 * Helper function to determine whether a plugin is active.
+	 *
+	 * @since 1.6.3-dev.1
+	 *
+	 * @param string $plugin_name plugin name, as the plugin-filename.php
+	 * @return boolean true if the named plugin is installed and active
+	 */
+	public static function is_plugin_active( $plugin_name ) {
+
 		$active_plugins = (array) get_option( 'active_plugins', array() );
 
 		if ( is_multisite() ) {
-			$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
+			$active_plugins = array_merge( $active_plugins, array_keys( get_site_option( 'active_sitewide_plugins', array() ) ) );
 		}
 
-		return in_array( 'woocommerce/woocommerce.php', $active_plugins ) || array_key_exists( 'woocommerce/woocommerce.php', $active_plugins );
+		$plugin_filenames = array();
+
+		foreach ( $active_plugins as $plugin ) {
+
+			if ( false !== strpos( $plugin, '/' ) ) {
+
+				// normal plugin name (plugin-dir/plugin-filename.php)
+				list( , $filename ) = explode( '/', $plugin );
+
+			} else {
+
+				// no directory, just plugin file
+				$filename = $plugin;
+			}
+
+			$plugin_filenames[] = $filename;
+		}
+
+		return in_array( $plugin_name, $plugin_filenames );
 	}
 
 
@@ -478,10 +516,11 @@ class WooCommerceCustomProductTabsLite {
 	public static function render_woocommerce_requirements_notice() {
 
 		$message = sprintf(
-			/* translators: Placeholders: %1$s - <strong>, %2$s - </strong>, %3$s + %5$s - <a> tags, %4$s - </a> */
-			esc_html__( '%1$sWooCommerce Custom Product Tabs Lite is inactive.%2$s This plugin requires WooCommerce 2.5.5 or newer. Please %3$sinstall WooCommerce 2.5.5 or newer%4$s, or %5$srun the WooCommerce database upgrade%4$s.', 'woocommerce-custom-product-tabs-lite' ),
+			/* translators: Placeholders: %1$s - <strong>, %2$s - </strong>, %3$s - version number, %4$s + %6$s - <a> tags, %5$s - </a> */
+			esc_html__( '%1$sWooCommerce Custom Product Tabs Lite is inactive.%2$s This plugin requires WooCommerce %3$s or newer. Please %4$sinstall WooCommerce %3$s or newer%5$s, or %6$srun the WooCommerce database upgrade%5$s.', 'woocommerce-custom-product-tabs-lite' ),
 			'<strong>',
 			'</strong>',
+			self::MIN_WOOCOMMERCE_VERSION,
 			'<a href="' . admin_url( 'plugins.php' ) . '">',
 			'</a>',
 			'<a href="' . admin_url( 'plugins.php?do_update_woocommerce=true' ) . '">'
@@ -524,13 +563,5 @@ function wc_custom_product_tabs_lite() {
 }
 
 
-/**
- * The WooCommerceCustomProductTabsLite global object
- *
- * TODO: Remove the global with WC 3.1 compat {BR 2017-03-21}
- *
- * @deprecated 1.4.0
- * @name $woocommerce_product_tabs_lite
- * @global WooCommerceCustomProductTabsLite $GLOBALS['woocommerce_product_tabs_lite']
- */
-$GLOBALS['woocommerce_product_tabs_lite'] = wc_custom_product_tabs_lite();
+// fire it up!
+wc_custom_product_tabs_lite();
