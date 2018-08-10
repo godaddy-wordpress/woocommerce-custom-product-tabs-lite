@@ -5,8 +5,8 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.6.3-dev.1
- * Tested up to: 4.9.6
+ * Version: 1.6.3
+ * Tested up to: 4.9.8
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
  *
@@ -22,7 +22,7 @@
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  *
  * WC requires at least: 2.6.14
- * WC tested up to: 3.4.3
+ * WC tested up to: 3.4.4
  */
 
 defined( 'ABSPATH' ) or exit;
@@ -42,7 +42,7 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/** plugin version number */
-	const VERSION = '1.6.3-dev.1';
+	const VERSION = '1.6.3';
 
 	/** required WooCommerce version number */
 	const MIN_WOOCOMMERCE_VERSION = '2.6.14';
@@ -367,7 +367,7 @@ class WooCommerceCustomProductTabsLite {
 	 *
 	 * TODO: Remove this when WooCommerce 3.0+ is required and remove helpers {BR 2018-04-20}
 	 *
-	 * @since 1.6.3-dev.1
+	 * @since 1.6.3
 	 *
 	 * @param \WC_Product $product the product object
 	 * @param string $key the meta key
@@ -391,7 +391,7 @@ class WooCommerceCustomProductTabsLite {
 	 *
 	 * TODO: Remove this when WooCommerce 3.0+ is required and remove helpers {BR 2018-04-20}
 	 *
-	 * @since 1.6.3-dev.1
+	 * @since 1.6.3
 	 *
 	 * @param \WC_Product $product the product object
 	 * @param string $key the meta key
@@ -411,7 +411,7 @@ class WooCommerceCustomProductTabsLite {
 	 *
 	 * TODO: Remove this when WooCommerce 3.0+ is required and remove helpers {BR 2018-04-20}
 	 *
-	 * @since 1.6.3-dev.1
+	 * @since 1.6.3
 	 *
 	 * @param \WC_Product $product the product object
 	 * @param string $key the meta key
@@ -434,7 +434,7 @@ class WooCommerceCustomProductTabsLite {
 	/**
 	 * Helper method to get the version of the currently installed WooCommerce
 	 *
-	 * @since 1.6.3-dev.1
+	 * @since 1.6.3
 	 *
 	 * @return string woocommerce version number or null
 	 */
@@ -446,7 +446,7 @@ class WooCommerceCustomProductTabsLite {
 	/**
 	 * Returns true if the installed version of WooCommerce is 3.0 or greater
 	 *
-	 * @since 1.6.3-dev.1
+	 * @since 1.6.3
 	 *
 	 * @return boolean true if the installed version of WooCommerce is 3.0 or greater
 	 */
@@ -459,13 +459,13 @@ class WooCommerceCustomProductTabsLite {
 	 * Checks if WooCommerce is active
 	 *
 	 * @since  1.0.0
-	 * @deprecated 1.6.3-dev.1
+	 * @deprecated 1.6.3
 	 *
 	 * @return bool true if WooCommerce is active, false otherwise
 	 */
 	public static function is_woocommerce_active() {
 
-		_deprecated_function( 'WooCommerceCustomProductTabsLite::is_woocommerce_active', '1.6.3-dev.1', 'WooCommerceCustomProductTabsLite::is_plugin_active' );
+		_deprecated_function( 'WooCommerceCustomProductTabsLite::is_woocommerce_active', '1.6.3', 'WooCommerceCustomProductTabsLite::is_plugin_active' );
 		return self::is_plugin_active( 'woocommerce.php' );
 	}
 
@@ -473,7 +473,7 @@ class WooCommerceCustomProductTabsLite {
 	/**
 	 * Helper function to determine whether a plugin is active.
 	 *
-	 * @since 1.6.3-dev.1
+	 * @since 1.6.3
 	 *
 	 * @param string $plugin_name plugin name, as the plugin-filename.php
 	 * @return boolean true if the named plugin is installed and active
