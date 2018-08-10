@@ -80,7 +80,7 @@ add_filter( 'woocommerce_custom_product_tabs_lite_title', 'sv_change_custom_tab_
 
 == Changelog ==
 
-= 1.6.3-dev.1 - 2018.nn.nn =
+= 2018.nn.nn - version 1.6.3-dev.1 =
  * Misc - Remove support for WooCommerce 2.5
 
 = 1.6.2 - 2017.08.22 =
