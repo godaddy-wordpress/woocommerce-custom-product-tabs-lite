@@ -5,12 +5,12 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.6.2
- * Tested up to: 4.8
+ * Version: 1.6.3-dev.1
+ * Tested up to: 4.9.6
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
  *
- * Copyright: (c) 2012-2017, SkyVerge, Inc. (info@skyverge.com)
+ * Copyright: (c) 2012-2018, SkyVerge, Inc. (info@skyverge.com)
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -18,34 +18,40 @@
  * @package     WC-Custom-Product-Tabs-Lite
  * @author      SkyVerge
  * @category    Plugin
- * @copyright   Copyright (c) 2012-2017, SkyVerge, Inc.
+ * @copyright   Copyright (c) 2012-2018, SkyVerge, Inc.
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
+ *
+ * WC requires at least: 2.6.14
+ * WC tested up to: 3.4.3
  */
 
 defined( 'ABSPATH' ) or exit;
 
-// Check if WooCommerce is active & at least v2.5.5, and bail if it's not
-if ( ! WooCommerceCustomProductTabsLite::is_woocommerce_active() || version_compare( get_option( 'woocommerce_db_version' ), '2.5.5', '<' ) ) {
+// Check if WooCommerce is active & at least the minimum version, and bail if it's not
+if ( ! WooCommerceCustomProductTabsLite::is_plugin_active( 'woocommerce.php' ) || version_compare( get_option( 'woocommerce_db_version' ), WooCommerceCustomProductTabsLite::MIN_WOOCOMMERCE_VERSION, '<' ) ) {
 	add_action( 'admin_notices', array( 'WooCommerceCustomProductTabsLite', 'render_woocommerce_requirements_notice' ) );
 	return;
 }
 
 /**
- * Main plugin class WooCommerceCustomProductTabsLite
+ * Main plugin class WooCommerceCustomProductTabsLite.
  *
  * @since 1.0.0
  */
 class WooCommerceCustomProductTabsLite {
 
 
-	/** @var bool|array tab data */
-	private $tab_data = false;
-
 	/** plugin version number */
-	const VERSION = '1.6.2';
+	const VERSION = '1.6.3-dev.1';
+
+	/** required WooCommerce version number */
+	const MIN_WOOCOMMERCE_VERSION = '2.6.14';
 
 	/** plugin version name */
 	const VERSION_OPTION_NAME = 'woocommerce_custom_product_tabs_lite_db_version';
+
+	/** @var bool|array tab data */
+	private $tab_data = false;
 
 	/** @var WooCommerceCustomProductTabsLite single instance of this plugin */
 	protected static $instance;
@@ -205,15 +211,15 @@ class WooCommerceCustomProductTabsLite {
 	/**
 	 * Adds the panel to the Product Data postbox in the product interface
 	 *
-	 * TODO: We likely want to migrate getting meta to a product CRUD method post WC 3.1 {BR 2017-03-21}
-	 *
 	 * @since 1.0.0
 	 */
 	public function product_write_panel() {
-		global $post; // the product
+		global $post;
+
+		$product = wc_get_product( $post );
 
 		// pull the custom tab data out of the database
-		$tab_data = maybe_unserialize( get_post_meta( $post->ID, 'frs_woo_product_tabs', true ) );
+		$tab_data = self::get_product_meta( $product, 'frs_woo_product_tabs' );
 
 		if ( empty( $tab_data ) ) {
 
@@ -237,7 +243,7 @@ class WooCommerceCustomProductTabsLite {
 					'value'       => $tab['title'],
 				));
 
-				$this->woocommerce_wp_textarea_input( array(
+				woocommerce_wp_textarea_input( array(
 					'id'          => '_wc_custom_product_tabs_lite_tab_content',
 					'label'       => __( 'Content', 'woocommerce-custom-product-tabs-lite' ),
 					'placeholder' => __( 'HTML and text to display.', 'woocommerce-custom-product-tabs-lite' ),
@@ -253,8 +259,6 @@ class WooCommerceCustomProductTabsLite {
 	 * Saves the data input into the product boxes, as post meta data
 	 * identified by the name 'frs_woo_product_tabs'
 	 *
-	 * TODO: We likely want to migrate getting / setting meta to a product CRUD method post WC 3.1 {BR 2017-03-21}
-	 *
 	 * @since 1.0.0
 	 *
 	 * @param int $post_id the post (product) identifier
@@ -264,11 +268,16 @@ class WooCommerceCustomProductTabsLite {
 
 		$tab_title   = stripslashes( $_POST['_wc_custom_product_tabs_lite_tab_title'] );
 		$tab_content = stripslashes( $_POST['_wc_custom_product_tabs_lite_tab_content'] );
+		$product     = wc_get_product( $post_id );
 
-		if ( empty( $tab_title ) && empty( $tab_content ) && get_post_meta( $post_id, 'frs_woo_product_tabs', true ) ) {
+		if ( empty( $tab_title ) && empty( $tab_content ) && self::get_product_meta( $product, 'frs_woo_product_tabs' ) ) {
 
 			// clean up if the custom tabs are removed
-			delete_post_meta( $post_id, 'frs_woo_product_tabs' );
+			self::delete_product_meta( $product, 'frs_woo_product_tabs' );
+
+			if ( self::is_wc_version_gte_3_0() ) {
+				$product->save();
+			}
 
 		} elseif ( ! empty( $tab_title ) || ! empty( $tab_content ) ) {
 
@@ -308,34 +317,12 @@ class WooCommerceCustomProductTabsLite {
 				'content' => $tab_content,
 			);
 
-			update_post_meta( $post_id, 'frs_woo_product_tabs', $tab_data );
+			self::update_product_meta( $product, 'frs_woo_product_tabs', $tab_data );
+
+			if ( self::is_wc_version_gte_3_0() ) {
+				$product->save();
+			}
 		}
-	}
-
-
-	/**
-	 * Helper function to generate a text area input for the custom tab
-	 *
-	 * TODO: We likely want to migrate getting meta to a product CRUD method post WC 3.1 {BR 2017-03-21}
-	 *
-	 * @since 1.0.0
-	 * @param array $field the field data
-	 */
-	private function woocommerce_wp_textarea_input( $field ) {
-		global $thepostid, $post;
-
-		$thepostid            = ! $thepostid                   ? $post->ID             : $thepostid;
-		$field['placeholder'] = isset( $field['placeholder'] ) ? $field['placeholder'] : '';
-		$field['class']       = isset( $field['class'] )       ? $field['class']       : 'short';
-		$field['value']       = isset( $field['value'] )       ? $field['value']       : get_post_meta( $thepostid, $field['id'], true );
-
-		echo '<p class="form-field ' . $field['id'] . '_field"><label style="display:block;" for="' . $field['id'] . '">' . $field['label'] . '</label><textarea class="' . $field['class'] . '" name="' . $field['id'] . '" id="' . $field['id'] . '" placeholder="' . $field['placeholder'] . '" rows="2" cols="20"' . (isset( $field['style'] ) ? ' style="' . $field['style'] . '"' : '') . '>' . esc_textarea( $field['value'] ) . '</textarea> ';
-
-		if ( isset( $field['description'] ) && $field['description'] ) {
-			echo '<span class="description">' . $field['description'] . '</span>';
-		}
-
-		echo '</p>';
 	}
 
 
@@ -361,15 +348,13 @@ class WooCommerceCustomProductTabsLite {
 	 * Lazy-load the product_tabs meta data, and return true if it exists,
 	 * false otherwise
 	 *
-	 * TODO: We likely want to migrate getting meta to a product CRUD method post WC 3.1 {BR 2017-03-21}
-	 *
 	 * @param \WC_Product $product the product object
 	 * @return true if there is custom tab data, false otherwise
 	 */
 	private function product_has_custom_tabs( $product ) {
 
 		if ( false === $this->tab_data ) {
-			$this->tab_data = maybe_unserialize( get_post_meta( $product->get_id(), 'frs_woo_product_tabs', true ) );
+			$this->tab_data = maybe_unserialize( self::get_product_meta( $product, 'frs_woo_product_tabs' ) );
 		}
 
 		// tab must at least have a title to exist
@@ -378,20 +363,148 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/**
+	 * Helper method to update product meta pre and post WC 3.0.
+	 *
+	 * TODO: Remove this when WooCommerce 3.0+ is required and remove helpers {BR 2018-04-20}
+	 *
+	 * @since 1.6.3-dev.1
+	 *
+	 * @param \WC_Product $product the product object
+	 * @param string $key the meta key
+	 * @param mixed $value the meta value
+	 * @return mixed the product property
+	 */
+	protected static function update_product_meta( $product, $key = '', $value = '' ) {
+
+		if ( self::is_wc_version_gte_3_0() ) {
+			$value = $product->update_meta_data( $key, $value );
+		} else {
+			$value = update_post_meta( $product->get_id(), $key, $value );
+		}
+
+		return $value;
+	}
+
+
+	/**
+	 * Helper method to delete product meta pre and post WC 3.0.
+	 *
+	 * TODO: Remove this when WooCommerce 3.0+ is required and remove helpers {BR 2018-04-20}
+	 *
+	 * @since 1.6.3-dev.1
+	 *
+	 * @param \WC_Product $product the product object
+	 * @param string $key the meta key
+	 */
+	protected static function delete_product_meta( $product, $key = '' ) {
+
+		if ( self::is_wc_version_gte_3_0() ) {
+			$product->delete_meta_data( $key );
+		} else {
+			delete_post_meta( $product->get_id(), $key );
+		}
+	}
+
+
+	/**
+	 * Helper method to get product meta pre and post WC 3.0.
+	 *
+	 * TODO: Remove this when WooCommerce 3.0+ is required and remove helpers {BR 2018-04-20}
+	 *
+	 * @since 1.6.3-dev.1
+	 *
+	 * @param \WC_Product $product the product object
+	 * @param string $key the meta key
+	 * @param bool $single whether to get the meta as a single item. Defaults to `true`
+	 * @param string $context if 'view' then the value will be filtered
+	 * @return mixed the product property
+	 */
+	protected static function get_product_meta( $product, $key = '', $single = true, $context = 'edit' ) {
+
+		if ( self::is_wc_version_gte_3_0() ) {
+			$value = $product->get_meta( $key, $single, $context );
+		} else {
+			$value = get_post_meta( $product->get_id(), $key, $single );
+		}
+
+		return $value;
+	}
+
+
+	/**
+	 * Helper method to get the version of the currently installed WooCommerce
+	 *
+	 * @since 1.6.3-dev.1
+	 *
+	 * @return string woocommerce version number or null
+	 */
+	private static function get_wc_version() {
+		return defined( 'WC_VERSION' ) && WC_VERSION ? WC_VERSION : null;
+	}
+
+
+	/**
+	 * Returns true if the installed version of WooCommerce is 3.0 or greater
+	 *
+	 * @since 1.6.3-dev.1
+	 *
+	 * @return boolean true if the installed version of WooCommerce is 3.0 or greater
+	 */
+	private static function is_wc_version_gte_3_0() {
+		return self::get_wc_version() && version_compare( self::get_wc_version(), '3.0', '>=' );
+	}
+
+
+	/**
 	 * Checks if WooCommerce is active
 	 *
 	 * @since  1.0.0
+	 * @deprecated 1.6.3-dev.1
+	 *
 	 * @return bool true if WooCommerce is active, false otherwise
 	 */
 	public static function is_woocommerce_active() {
 
+		_deprecated_function( 'WooCommerceCustomProductTabsLite::is_woocommerce_active', '1.6.3-dev.1', 'WooCommerceCustomProductTabsLite::is_plugin_active' );
+		return self::is_plugin_active( 'woocommerce.php' );
+	}
+
+
+	/**
+	 * Helper function to determine whether a plugin is active.
+	 *
+	 * @since 1.6.3-dev.1
+	 *
+	 * @param string $plugin_name plugin name, as the plugin-filename.php
+	 * @return boolean true if the named plugin is installed and active
+	 */
+	public static function is_plugin_active( $plugin_name ) {
+
 		$active_plugins = (array) get_option( 'active_plugins', array() );
 
 		if ( is_multisite() ) {
-			$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
+			$active_plugins = array_merge( $active_plugins, array_keys( get_site_option( 'active_sitewide_plugins', array() ) ) );
 		}
 
-		return in_array( 'woocommerce/woocommerce.php', $active_plugins ) || array_key_exists( 'woocommerce/woocommerce.php', $active_plugins );
+		$plugin_filenames = array();
+
+		foreach ( $active_plugins as $plugin ) {
+
+			if ( false !== strpos( $plugin, '/' ) ) {
+
+				// normal plugin name (plugin-dir/plugin-filename.php)
+				list( , $filename ) = explode( '/', $plugin );
+
+			} else {
+
+				// no directory, just plugin file
+				$filename = $plugin;
+			}
+
+			$plugin_filenames[] = $filename;
+		}
+
+		return in_array( $plugin_name, $plugin_filenames );
 	}
 
 
@@ -403,10 +516,11 @@ class WooCommerceCustomProductTabsLite {
 	public static function render_woocommerce_requirements_notice() {
 
 		$message = sprintf(
-			/* translators: Placeholders: %1$s - <strong>, %2$s - </strong>, %3$s + %5$s - <a> tags, %4$s - </a> */
-			esc_html__( '%1$sWooCommerce Custom Product Tabs Lite is inactive.%2$s This plugin requires WooCommerce 2.5.5 or newer. Please %3$sinstall WooCommerce 2.5.5 or newer%4$s, or %5$srun the WooCommerce database upgrade%4$s.', 'woocommerce-custom-product-tabs-lite' ),
+			/* translators: Placeholders: %1$s - <strong>, %2$s - </strong>, %3$s - version number, %4$s + %6$s - <a> tags, %5$s - </a> */
+			esc_html__( '%1$sWooCommerce Custom Product Tabs Lite is inactive.%2$s This plugin requires WooCommerce %3$s or newer. Please %4$sinstall WooCommerce %3$s or newer%5$s, or %6$srun the WooCommerce database upgrade%5$s.', 'woocommerce-custom-product-tabs-lite' ),
 			'<strong>',
 			'</strong>',
+			self::MIN_WOOCOMMERCE_VERSION,
 			'<a href="' . admin_url( 'plugins.php' ) . '">',
 			'</a>',
 			'<a href="' . admin_url( 'plugins.php?do_update_woocommerce=true' ) . '">'
@@ -449,13 +563,5 @@ function wc_custom_product_tabs_lite() {
 }
 
 
-/**
- * The WooCommerceCustomProductTabsLite global object
- *
- * TODO: Remove the global with WC 3.1 compat {BR 2017-03-21}
- *
- * @deprecated 1.4.0
- * @name $woocommerce_product_tabs_lite
- * @global WooCommerceCustomProductTabsLite $GLOBALS['woocommerce_product_tabs_lite']
- */
-$GLOBALS['woocommerce_product_tabs_lite'] = wc_custom_product_tabs_lite();
+// fire it up!
+wc_custom_product_tabs_lite();
