@@ -5,12 +5,12 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.6.3
+ * Version: 1.6.4-dev.1
  * Tested up to: 4.9.8
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
  *
- * Copyright: (c) 2012-2018, SkyVerge, Inc. (info@skyverge.com)
+ * Copyright: (c) 2012-2019, SkyVerge, Inc. (info@skyverge.com)
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -18,7 +18,7 @@
  * @package     WC-Custom-Product-Tabs-Lite
  * @author      SkyVerge
  * @category    Plugin
- * @copyright   Copyright (c) 2012-2018, SkyVerge, Inc.
+ * @copyright   Copyright (c) 2012-2019, SkyVerge, Inc.
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  *
  * WC requires at least: 2.6.14
@@ -42,7 +42,7 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/** plugin version number */
-	const VERSION = '1.6.3';
+	const VERSION = '1.6.4-dev.1';
 
 	/** required WooCommerce version number */
 	const MIN_WOOCOMMERCE_VERSION = '2.6.14';
