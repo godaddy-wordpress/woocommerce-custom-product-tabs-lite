@@ -145,7 +145,7 @@ class WooCommerceCustomProductTabsLite {
 	public function add_custom_product_tabs( $tabs ) {
 		global $product;
 
-		if ( ! $product instanceof \WC_Product ) {
+		if ( ! $product instanceof WC_Product ) {
 			return $tabs;
 		}
 
@@ -447,7 +447,7 @@ class WooCommerceCustomProductTabsLite {
  * @return \WooCommerceCustomProductTabsLite
  */
 function wc_custom_product_tabs_lite() {
-	return \WooCommerceCustomProductTabsLite::instance();
+	return WooCommerceCustomProductTabsLite::instance();
 }
 
 

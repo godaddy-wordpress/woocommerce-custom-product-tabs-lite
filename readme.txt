@@ -2,7 +2,6 @@
 Contributors: skyverge, maxrice, tamarazuk, chasewiseman, nekojira, beka.rice
 Tags: woocommerce, product tabs, custom tab, woo commerce tab
 Requires at least: 4.4
-Requires PHP: 5.6
 Tested up to: 5.2.2
 Stable tag: 1.7.0
 
@@ -84,7 +83,6 @@ add_filter( 'woocommerce_custom_product_tabs_lite_title', 'sv_change_custom_tab_
 = 2019.08.13 - version 1.7.0
  * Misc - Add support for WooCommerce 3.7
  * Misc - Remove support for WooCommerce 2.6
- * Misc - Require PHP 5.6+
 
 = 2019.06.12 - version 1.6.4
  * Misc - Declare WooCommerce 3.6 compatibility
