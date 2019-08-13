@@ -2,6 +2,7 @@
 Contributors: skyverge, maxrice, tamarazuk, chasewiseman, nekojira, beka.rice
 Tags: woocommerce, product tabs, custom tab, woo commerce tab
 Requires at least: 4.4
+Requires PHP: 5.6
 Tested up to: 5.2.2
 Stable tag: 1.7.0
 
