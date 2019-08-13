@@ -5,8 +5,8 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.6.4
- * Tested up to: 5.2.1
+ * Version: 1.7.0-dev.1
+ * Tested up to: 5.2.2
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
  *
@@ -21,8 +21,8 @@
  * @copyright   Copyright (c) 2012-2019, SkyVerge, Inc.
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  *
- * WC requires at least: 2.6.14
- * WC tested up to: 3.6.4
+ * WC requires at least: 3.0.9
+ * WC tested up to: 3.7.0
  */
 
 defined( 'ABSPATH' ) or exit;
@@ -42,10 +42,10 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/** plugin version number */
-	const VERSION = '1.6.4';
+	const VERSION = '1.7.0-dev.1';
 
 	/** required WooCommerce version number */
-	const MIN_WOOCOMMERCE_VERSION = '2.6.14';
+	const MIN_WOOCOMMERCE_VERSION = '3.0.9';
 
 	/** plugin version name */
 	const VERSION_OPTION_NAME = 'woocommerce_custom_product_tabs_lite_db_version';
@@ -146,7 +146,7 @@ class WooCommerceCustomProductTabsLite {
 	public function add_custom_product_tabs( $tabs ) {
 		global $product;
 
-		if ( ! $product instanceof WC_Product ) {
+		if ( ! $product instanceof \WC_Product ) {
 			return $tabs;
 		}
 
@@ -168,7 +168,9 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/**
-	 * Render the custom product tab panel content for the given $tab
+	 * Renders the custom product tab panel content for the given $tab.
+	 *
+	 * @see WooCommerceCustomProductTabsLite::add_custom_product_tabs() callback
 	 *
 	 * $tab structure:
 	 * Array(
@@ -176,13 +178,11 @@ class WooCommerceCustomProductTabsLite {
 	 *   'priority' => (string) Tab priority,
 	 *   'callback' => (mixed) callback function,
 	 *   'id'       => (int) tab post identifier,
-	 *   'content'  => (sring) tab content,
+	 *   'content'  => (string) tab content,
 	 * )
 	 *
 	 * @param string $key tab key
 	 * @param array $tab tab data
-	 *
-	 * @param array $tab the tab
 	 */
 	public function custom_product_tabs_panel_content( $key, $tab ) {
 
@@ -219,7 +219,7 @@ class WooCommerceCustomProductTabsLite {
 		$product = wc_get_product( $post );
 
 		// pull the custom tab data out of the database
-		$tab_data = self::get_product_meta( $product, 'frs_woo_product_tabs' );
+		$tab_data = $product->get_meta( 'frs_woo_product_tabs', true, 'edit' );
 
 		if ( empty( $tab_data ) ) {
 
@@ -270,14 +270,11 @@ class WooCommerceCustomProductTabsLite {
 		$tab_content = stripslashes( $_POST['_wc_custom_product_tabs_lite_tab_content'] );
 		$product     = wc_get_product( $post_id );
 
-		if ( empty( $tab_title ) && empty( $tab_content ) && self::get_product_meta( $product, 'frs_woo_product_tabs' ) ) {
+		if ( empty( $tab_title ) && empty( $tab_content ) && $product->get_meta( 'frs_woo_product_tabs', true, 'edit' ) ) {
 
 			// clean up if the custom tabs are removed
-			self::delete_product_meta( $product, 'frs_woo_product_tabs' );
-
-			if ( self::is_wc_version_gte_3_0() ) {
-				$product->save();
-			}
+			$product->delete_meta_data( 'frs_woo_product_tabs' );
+			$product->save();
 
 		} elseif ( ! empty( $tab_title ) || ! empty( $tab_content ) ) {
 
@@ -286,7 +283,7 @@ class WooCommerceCustomProductTabsLite {
 
 			if ( $tab_title ) {
 
-				if ( strlen( $tab_title ) != strlen( utf8_encode( $tab_title ) ) ) {
+				if ( strlen( $tab_title ) !== strlen( utf8_encode( $tab_title ) ) ) {
 
 					// can't have titles with utf8 characters as it breaks the tab-switching javascript
 					$tab_id = "tab-custom";
@@ -317,11 +314,8 @@ class WooCommerceCustomProductTabsLite {
 				'content' => $tab_content,
 			);
 
-			self::update_product_meta( $product, 'frs_woo_product_tabs', $tab_data );
-
-			if ( self::is_wc_version_gte_3_0() ) {
-				$product->save();
-			}
+			$product->update_meta_data( 'frs_woo_product_tabs', $tab_data );
+			$product->save();
 		}
 	}
 
@@ -337,9 +331,11 @@ class WooCommerceCustomProductTabsLite {
 	 * @return WooCommerceCustomProductTabsLite
 	 */
 	public static function instance() {
-		if ( is_null( self::$instance ) ) {
+
+		if ( null !== self::$instance ) {
 			self::$instance = new self();
 		}
+
 		return self::$instance;
 	}
 
@@ -354,119 +350,11 @@ class WooCommerceCustomProductTabsLite {
 	private function product_has_custom_tabs( $product ) {
 
 		if ( false === $this->tab_data ) {
-			$this->tab_data = maybe_unserialize( self::get_product_meta( $product, 'frs_woo_product_tabs' ) );
+			$this->tab_data = maybe_unserialize( $product->get_meta( 'frs_woo_product_tabs', true, 'edit' ) );
 		}
 
 		// tab must at least have a title to exist
 		return ! empty( $this->tab_data ) && ! empty( $this->tab_data[0] ) && ! empty( $this->tab_data[0]['title'] );
-	}
-
-
-	/**
-	 * Helper method to update product meta pre and post WC 3.0.
-	 *
-	 * TODO: Remove this when WooCommerce 3.0+ is required and remove helpers {BR 2018-04-20}
-	 *
-	 * @since 1.6.3
-	 *
-	 * @param \WC_Product $product the product object
-	 * @param string $key the meta key
-	 * @param mixed $value the meta value
-	 * @return mixed the product property
-	 */
-	protected static function update_product_meta( $product, $key = '', $value = '' ) {
-
-		if ( self::is_wc_version_gte_3_0() ) {
-			$value = $product->update_meta_data( $key, $value );
-		} else {
-			$value = update_post_meta( $product->get_id(), $key, $value );
-		}
-
-		return $value;
-	}
-
-
-	/**
-	 * Helper method to delete product meta pre and post WC 3.0.
-	 *
-	 * TODO: Remove this when WooCommerce 3.0+ is required and remove helpers {BR 2018-04-20}
-	 *
-	 * @since 1.6.3
-	 *
-	 * @param \WC_Product $product the product object
-	 * @param string $key the meta key
-	 */
-	protected static function delete_product_meta( $product, $key = '' ) {
-
-		if ( self::is_wc_version_gte_3_0() ) {
-			$product->delete_meta_data( $key );
-		} else {
-			delete_post_meta( $product->get_id(), $key );
-		}
-	}
-
-
-	/**
-	 * Helper method to get product meta pre and post WC 3.0.
-	 *
-	 * TODO: Remove this when WooCommerce 3.0+ is required and remove helpers {BR 2018-04-20}
-	 *
-	 * @since 1.6.3
-	 *
-	 * @param \WC_Product $product the product object
-	 * @param string $key the meta key
-	 * @param bool $single whether to get the meta as a single item. Defaults to `true`
-	 * @param string $context if 'view' then the value will be filtered
-	 * @return mixed the product property
-	 */
-	protected static function get_product_meta( $product, $key = '', $single = true, $context = 'edit' ) {
-
-		if ( self::is_wc_version_gte_3_0() ) {
-			$value = $product->get_meta( $key, $single, $context );
-		} else {
-			$value = get_post_meta( $product->get_id(), $key, $single );
-		}
-
-		return $value;
-	}
-
-
-	/**
-	 * Helper method to get the version of the currently installed WooCommerce
-	 *
-	 * @since 1.6.3
-	 *
-	 * @return string woocommerce version number or null
-	 */
-	private static function get_wc_version() {
-		return defined( 'WC_VERSION' ) && WC_VERSION ? WC_VERSION : null;
-	}
-
-
-	/**
-	 * Returns true if the installed version of WooCommerce is 3.0 or greater
-	 *
-	 * @since 1.6.3
-	 *
-	 * @return boolean true if the installed version of WooCommerce is 3.0 or greater
-	 */
-	private static function is_wc_version_gte_3_0() {
-		return self::get_wc_version() && version_compare( self::get_wc_version(), '3.0', '>=' );
-	}
-
-
-	/**
-	 * Checks if WooCommerce is active
-	 *
-	 * @since  1.0.0
-	 * @deprecated 1.6.3
-	 *
-	 * @return bool true if WooCommerce is active, false otherwise
-	 */
-	public static function is_woocommerce_active() {
-
-		_deprecated_function( 'WooCommerceCustomProductTabsLite::is_woocommerce_active', '1.6.3', 'WooCommerceCustomProductTabsLite::is_plugin_active' );
-		return self::is_plugin_active( 'woocommerce.php' );
 	}
 
 
@@ -548,6 +436,7 @@ class WooCommerceCustomProductTabsLite {
 			update_option( self::VERSION_OPTION_NAME, self::VERSION );
 		}
 	}
+
 
 }
 
