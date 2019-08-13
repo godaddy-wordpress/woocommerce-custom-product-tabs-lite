@@ -111,7 +111,6 @@ class WooCommerceCustomProductTabsLite {
 	 */
 	public function init() {
 
-		// backend stuff
 		add_action( 'woocommerce_product_write_panel_tabs', array( $this, 'product_write_panel_tab' ) );
 		add_action( 'woocommerce_product_data_panels',      array( $this, 'product_write_panel' ) );
 		add_action( 'woocommerce_process_product_meta',     array( $this, 'product_save_data' ), 10, 2 );
@@ -332,7 +331,7 @@ class WooCommerceCustomProductTabsLite {
 	 */
 	public static function instance() {
 
-		if ( null !== self::$instance ) {
+		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
 
@@ -448,7 +447,7 @@ class WooCommerceCustomProductTabsLite {
  * @return \WooCommerceCustomProductTabsLite
  */
 function wc_custom_product_tabs_lite() {
-	return WooCommerceCustomProductTabsLite::instance();
+	return \WooCommerceCustomProductTabsLite::instance();
 }
 
 
