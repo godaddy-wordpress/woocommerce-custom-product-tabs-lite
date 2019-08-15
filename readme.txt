@@ -2,8 +2,8 @@
 Contributors: skyverge, maxrice, tamarazuk, chasewiseman, nekojira, beka.rice
 Tags: woocommerce, product tabs, custom tab, woo commerce tab
 Requires at least: 4.4
-Tested up to: 5.2.1
-Stable tag: 1.6.4
+Tested up to: 5.2.2
+Stable tag: 1.7.0
 
 This plugin extends WooCommerce by allowing a custom product tab to be created with any content.
 
@@ -11,7 +11,7 @@ This plugin extends WooCommerce by allowing a custom product tab to be created w
 
 This plugin extends [WooCommerce](http://woocommerce.com/) to allow a custom product tab to be added to single product pages with arbitrary content. The new custom tab may contain text, html (such as embedded videos), or shortcodes, and will appear between the "Additional Information" and "Reviews" tabs.
 
-> Requires WooCommerce 2.6.14 or newer
+> Requires WooCommerce 3.0.9 or newer
 
 = Features =
 
@@ -79,6 +79,10 @@ add_filter( 'woocommerce_custom_product_tabs_lite_title', 'sv_change_custom_tab_
 `
 
 == Changelog ==
+
+= 2019.08.13 - version 1.7.0
+ * Misc - Add support for WooCommerce 3.7
+ * Misc - Remove support for WooCommerce 2.6
 
 = 2019.06.12 - version 1.6.4
  * Misc - Declare WooCommerce 3.6 compatibility
