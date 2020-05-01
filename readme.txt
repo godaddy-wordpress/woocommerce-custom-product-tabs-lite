@@ -81,6 +81,7 @@ add_filter( 'woocommerce_custom_product_tabs_lite_title', 'sv_change_custom_tab_
 == Changelog ==
 
 = 2020.nn.nn - version 1.7.4-dev.1 =
+ * Misc - Add support for WooCommerce 4.1
 
 = 2020.03.10 - version 1.7.3 =
  * Misc - Add support for WooCommerce 4.0
