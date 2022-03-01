@@ -80,8 +80,8 @@ add_filter( 'woocommerce_custom_product_tabs_lite_title', 'sv_change_custom_tab_
 
 == Changelog ==
 
-= 2020.05.04 - version 1.7.5 =
- * Misc - Tests Compatibility with WordPress 5.9.1
+= 2022.nn.nn - version 1.7.5-dev.1 =
+ * Misc - Require WooCommerce 3.9.4 or newer
 
 = 2020.05.04 - version 1.7.4 =
  * Misc - Add support for WooCommerce 4.1
