@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: WooCommerce Custom Product Tabs Lite
+ * Plugin Name: Custom Product Tabs Lite for WooCommerce
  * Plugin URI: https://www.skyverge.com/product/woocommerce-custom-product-tabs-lite/
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.7.5
+ * Version: 1.7.6-dev.1
  * Tested up to: 5.9.1
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
@@ -40,7 +40,7 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/** plugin version number */
-	const VERSION = '1.7.5';
+	const VERSION = '1.7.6-dev.1';
 
 	/** required WooCommerce version number */
 	const MIN_WOOCOMMERCE_VERSION = '3.9.4';
@@ -78,7 +78,7 @@ class WooCommerceCustomProductTabsLite {
 	 */
 	public function __clone() {
 		/* translators: Placeholders: %s - plugin name */
-		_doing_it_wrong( __FUNCTION__, sprintf( esc_html__( 'You cannot clone instances of %s.', 'woocommerce-custom-product-tabs-lite' ), 'WooCommerce Custom Product Tabs Lite' ), '1.5.0' );
+		_doing_it_wrong( __FUNCTION__, sprintf( esc_html__( 'You cannot clone instances of %s.', 'woocommerce-custom-product-tabs-lite' ), 'Custom Product Tabs Lite for WooCommerce' ), '1.5.0' );
 	}
 
 
@@ -89,7 +89,7 @@ class WooCommerceCustomProductTabsLite {
 	 */
 	public function __wakeup() {
 		/* translators: Placeholders: %s - plugin name */
-		_doing_it_wrong( __FUNCTION__, sprintf( esc_html__( 'You cannot unserialize instances of %s.', 'woocommerce-custom-product-tabs-lite' ), 'WooCommerce Custom Product Tabs Lite' ), '1.5.0' );
+		_doing_it_wrong( __FUNCTION__, sprintf( esc_html__( 'You cannot unserialize instances of %s.', 'woocommerce-custom-product-tabs-lite' ), 'Custom Product Tabs Lite for WooCommerce' ), '1.5.0' );
 	}
 
 
@@ -402,7 +402,7 @@ class WooCommerceCustomProductTabsLite {
 
 		$message = sprintf(
 			/* translators: Placeholders: %1$s - <strong>, %2$s - </strong>, %3$s - version number, %4$s + %6$s - <a> tags, %5$s - </a> */
-			esc_html__( '%1$sWooCommerce Custom Product Tabs Lite is inactive.%2$s This plugin requires WooCommerce %3$s or newer. Please %4$sinstall WooCommerce %3$s or newer%5$s, or %6$srun the WooCommerce database upgrade%5$s.', 'woocommerce-custom-product-tabs-lite' ),
+			esc_html__( '%1$sCustom Product Tabs Lite for WooCommerce is inactive.%2$s This plugin requires WooCommerce %3$s or newer. Please %4$sinstall WooCommerce %3$s or newer%5$s, or %6$srun the WooCommerce database upgrade%5$s.', 'woocommerce-custom-product-tabs-lite' ),
 			'<strong>',
 			'</strong>',
 			self::MIN_WOOCOMMERCE_VERSION,
