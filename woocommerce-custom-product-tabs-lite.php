@@ -187,8 +187,8 @@ class WooCommerceCustomProductTabsLite {
 		$content = apply_filters( 'the_content', $tab['content'] );
 		$content = str_replace( ']]>', ']]&gt;', $content );
 
-		echo apply_filters( 'woocommerce_custom_product_tabs_lite_heading', '<h2>' . $tab['title'] . '</h2>', $tab );
-		echo apply_filters( 'woocommerce_custom_product_tabs_lite_content', wp_kses_post( $content ), $tab );
+		echo wp_kses_post( apply_filters( 'woocommerce_custom_product_tabs_lite_heading', '<h2>' . esc_html( $tab['title'] ) . '</h2>', $tab ) );
+		echo wp_kses_post( apply_filters( 'woocommerce_custom_product_tabs_lite_content', $content, $tab ) );
 	}
 
 
