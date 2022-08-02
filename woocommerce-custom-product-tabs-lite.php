@@ -201,7 +201,7 @@ class WooCommerceCustomProductTabsLite {
 	 * @since 1.0.0
 	 */
 	public function product_write_panel_tab() {
-		echo "<li class=\"product_tabs_lite_tab\"><a href=\"#woocommerce_product_tabs_lite\"><span>" . __( 'Custom Tab', 'woocommerce-custom-product-tabs-lite' ) . "</span></a></li>";
+		echo "<li class=\"product_tabs_lite_tab\"><a href=\"#woocommerce_product_tabs_lite\"><span>" . esc_html__( 'Custom Tab', 'woocommerce-custom-product-tabs-lite' ) . "</span></a></li>";
 	}
 
 
