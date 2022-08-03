@@ -187,8 +187,8 @@ class WooCommerceCustomProductTabsLite {
 		$content = apply_filters( 'the_content', $tab['content'] );
 		$content = str_replace( ']]>', ']]&gt;', $content );
 
-		echo apply_filters( 'woocommerce_custom_product_tabs_lite_heading', '<h2>' . $tab['title'] . '</h2>', $tab );
-		echo apply_filters( 'woocommerce_custom_product_tabs_lite_content', wp_kses_post( $content ), $tab );
+		echo wp_kses_post( apply_filters( 'woocommerce_custom_product_tabs_lite_heading', '<h2>' . esc_html( $tab['title'] ) . '</h2>', $tab ) );
+		echo wp_kses_post( apply_filters( 'woocommerce_custom_product_tabs_lite_content', $content, $tab ) );
 	}
 
 
@@ -201,7 +201,7 @@ class WooCommerceCustomProductTabsLite {
 	 * @since 1.0.0
 	 */
 	public function product_write_panel_tab() {
-		echo "<li class=\"product_tabs_lite_tab\"><a href=\"#woocommerce_product_tabs_lite\"><span>" . __( 'Custom Tab', 'woocommerce-custom-product-tabs-lite' ) . "</span></a></li>";
+		echo "<li class=\"product_tabs_lite_tab\"><a href=\"#woocommerce_product_tabs_lite\"><span>" . esc_html__( 'Custom Tab', 'woocommerce-custom-product-tabs-lite' ) . "</span></a></li>";
 	}
 
 
@@ -263,8 +263,9 @@ class WooCommerceCustomProductTabsLite {
 	 */
 	public function product_save_data( $post_id, $post ) {
 
-		$tab_title   = sanitize_text_field( $_POST['_wc_custom_product_tabs_lite_tab_title'] );
+		// NOTE: custom HTML input is expected to be saved - this will be converted to a serialized array at the end of this method, and escaped with wp_kses_post() when output
 		$tab_content = stripslashes( $_POST['_wc_custom_product_tabs_lite_tab_content'] );
+		$tab_title   = sanitize_text_field( $_POST['_wc_custom_product_tabs_lite_tab_title'] );
 		$product     = wc_get_product( $post_id );
 
 		if ( empty( $tab_title ) && empty( $tab_content ) && $product->get_meta( 'frs_woo_product_tabs', true, 'edit' ) ) {
@@ -304,7 +305,7 @@ class WooCommerceCustomProductTabsLite {
 				}
 			}
 
-			// save the data to the database
+			// save the serialized data to the database
 			$tab_data[] = array(
 				'title'   => $tab_title,
 				'id'      => $tab_id,
