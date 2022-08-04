@@ -263,8 +263,7 @@ class WooCommerceCustomProductTabsLite {
 	 */
 	public function product_save_data( $post_id, $post ) {
 
-		// NOTE: custom HTML input is expected to be saved - this will be converted to a serialized array at the end of this method, and escaped with wp_kses_post() when output
-		$tab_content = stripslashes( $_POST['_wc_custom_product_tabs_lite_tab_content'] );
+		$tab_content = wp_kses_post( $_POST['_wc_custom_product_tabs_lite_tab_content'] );
 		$tab_title   = sanitize_text_field( $_POST['_wc_custom_product_tabs_lite_tab_title'] );
 		$product     = wc_get_product( $post_id );
 
