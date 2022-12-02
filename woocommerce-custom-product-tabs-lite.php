@@ -263,7 +263,8 @@ class WooCommerceCustomProductTabsLite {
 	 */
 	public function product_save_data( $post_id, $post ) {
 
-		$tab_content = wp_kses_post( $_POST['_wc_custom_product_tabs_lite_tab_content'] );
+		// stripslashes() so that shortcodes with arguments can be  used
+		$tab_content = wp_kses_post( stripslashes( $_POST['_wc_custom_product_tabs_lite_tab_content'] ) );
 		$tab_title   = sanitize_text_field( $_POST['_wc_custom_product_tabs_lite_tab_title'] );
 		$product     = wc_get_product( $post_id );
 

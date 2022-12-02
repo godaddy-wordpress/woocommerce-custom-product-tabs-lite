@@ -82,6 +82,7 @@ add_filter( 'woocommerce_custom_product_tabs_lite_title', 'sv_change_custom_tab_
 == Changelog ==
 
 = 2022.nn.nn - version 1.7.8-dev.1 =
+ * Fix - Allow shortcodes with parameters
  * Misc - Require PHP 7.4 and WordPress 5.6
 
 = 2022.08.03 - version 1.7.7 =
