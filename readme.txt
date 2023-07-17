@@ -81,7 +81,7 @@ add_filter( 'woocommerce_custom_product_tabs_lite_title', 'sv_change_custom_tab_
 
 == Changelog ==
 
-= 2023.nn.nn - version 1.8.0-dev.1
+= 2023.nn.nn - version 1.8.0-dev.1 =
  * Misc - Add compatibility for WooCommerce High Performance Order Storage (HPOS)
 
 = 2022.12.02 - version 1.7.8 =
