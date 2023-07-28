@@ -5,18 +5,18 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.7.8
+ * Version: 1.8.0-dev.1
  * Tested up to: 6.1.1
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
  *
- * Copyright: (c) 2012-2022, SkyVerge, Inc. (info@skyverge.com)
+ * Copyright: (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  *
  * @author      SkyVerge
- * @copyright   Copyright (c) 2012-2022, SkyVerge, Inc. (info@skyverge.com)
+ * @copyright   Copyright (c) 2012-2023, SkyVerge, Inc. (info@skyverge.com)
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  *
  * WC requires at least: 3.9.4
@@ -40,7 +40,7 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/** plugin version number */
-	const VERSION = '1.7.8';
+	const VERSION = '1.8.0';
 
 	/** required WooCommerce version number */
 	const MIN_WOOCOMMERCE_VERSION = '3.9.4';
@@ -56,8 +56,9 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/**
-	 * Gets things started by adding an action to initialize this plugin once
-	 * WooCommerce is known to be active and initialized
+	 * Gets things started by adding an action to initialize this plugin once WooCommerce is known to be active and initialized.
+	 *
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 
@@ -68,6 +69,26 @@ class WooCommerceCustomProductTabsLite {
 
 		add_action( 'init',             array( $this, 'load_translation' ) );
 		add_action( 'woocommerce_init', array( $this, 'init' ) );
+
+		// handle HPOS compatibility
+		add_action( 'before_woocommerce_init', [ $this, 'handle_hpos_compatibility' ] );
+	}
+
+
+	/**
+	 * Declares HPOS compatibility.
+	 *
+	 * @since 1.8.0-dev.1
+	 *
+	 * @internal
+	 *
+	 * @return void
+	 */
+	public function handle_hpos_compatibility()
+	{
+		if ( class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', plugin_basename( __FILE__ ), true );
+		}
 	}
 
 
