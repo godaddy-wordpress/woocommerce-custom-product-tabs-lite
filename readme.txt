@@ -81,6 +81,11 @@ add_filter( 'woocommerce_custom_product_tabs_lite_title', 'sv_change_custom_tab_
 
 == Changelog ==
 
+= 2024.nn.nn - version 1.9.0-dev.1 =
+* Fix - Ensure PHP 8.2+ compatibility
+* Misc - Declare WordPress 6.7
+* Misc -  Declare WooCommerce 9.3.3 compatibility
+
 = 2023.07.28 - version 1.8.0 =
  * Misc - Add compatibility for WooCommerce High Performance Order Storage (HPOS)
 
