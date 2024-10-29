@@ -20,7 +20,7 @@
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  *
  * WC requires at least: 3.9.4
- * WC tested up to: 7.9.0
+ * WC tested up to: 9.3.3
  */
 
 defined( 'ABSPATH' ) or exit;
@@ -302,7 +302,7 @@ class WooCommerceCustomProductTabsLite {
 
 			if ( $tab_title ) {
 
-				if ( strlen( $tab_title ) !== strlen( utf8_encode( $tab_title ) ) ) {
+				if ( strlen( $tab_title ) !== strlen( mb_convert_encoding( $tab_title, 'UTF-8', mb_detect_encoding( $tab_title ) ) ) ) {
 
 					// can't have titles with utf8 characters as it breaks the tab-switching javascript
 					$tab_id = "tab-custom";
