@@ -4,7 +4,7 @@ Tags: woocommerce, product tabs, custom tab, woo commerce tab
 Requires at least: 5.6
 Requires PHP: 7.4
 Tested up to: 6.2.2
-Stable tag: 1.8.0
+Stable tag: 1.9.0-dev.1
 
 This plugin extends WooCommerce by allowing a custom product tab to be created with any content.
 
