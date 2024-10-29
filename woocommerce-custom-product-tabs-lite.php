@@ -5,7 +5,7 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.8.0
+ * Version: 1.9.0-dev.1
  * Tested up to: 6.2.2
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
@@ -20,7 +20,7 @@
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  *
  * WC requires at least: 3.9.4
- * WC tested up to: 7.9.0
+ * WC tested up to: 9.3.3
  */
 
 defined( 'ABSPATH' ) or exit;
@@ -40,7 +40,7 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/** plugin version number */
-	const VERSION = '1.8.0';
+	const VERSION = '1.9.0-dev.1';
 
 	/** required WooCommerce version number */
 	const MIN_WOOCOMMERCE_VERSION = '3.9.4';
@@ -302,7 +302,7 @@ class WooCommerceCustomProductTabsLite {
 
 			if ( $tab_title ) {
 
-				if ( strlen( $tab_title ) !== strlen( utf8_encode( $tab_title ) ) ) {
+				if ( strlen( $tab_title ) !== strlen( mb_convert_encoding( $tab_title, 'UTF-8', mb_detect_encoding( $tab_title ) ) ) ) {
 
 					// can't have titles with utf8 characters as it breaks the tab-switching javascript
 					$tab_id = "tab-custom";
