@@ -67,6 +67,16 @@ class WooCommerceCustomProductTabsLite {
 			$this->install();
 		}
 
+		$this->addHooks();
+	}
+
+	/**
+	 * Registers hook callbacks to bootstrap the plugin.
+	 *
+	 * @return void
+	 */
+	public function addHooks()
+	{
 		add_action( 'init',             array( $this, 'load_translation' ) );
 		add_action( 'woocommerce_init', array( $this, 'init' ) );
 
