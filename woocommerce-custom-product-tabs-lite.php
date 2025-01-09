@@ -48,6 +48,8 @@ class WooCommerceCustomProductTabsLite {
 	/** plugin version name */
 	const VERSION_OPTION_NAME = 'woocommerce_custom_product_tabs_lite_db_version';
 
+	const PRODUCT_TABS_META_KEY = '_wc_custom_product_tabs_lite_product_tabs';
+
 	/** @var bool|array tab data */
 	private $tab_data = false;
 
@@ -247,7 +249,7 @@ class WooCommerceCustomProductTabsLite {
 		$product = wc_get_product( $post );
 
 		// pull the custom tab data out of the database
-		$tab_data = $product->get_meta( 'frs_woo_product_tabs', true, 'edit' );
+		$tab_data = $product->get_meta( self::PRODUCT_TABS_META_KEY, true, 'edit' );
 
 		if ( empty( $tab_data ) ) {
 
@@ -284,8 +286,7 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/**
-	 * Saves the data input into the product boxes, as post meta data
-	 * identified by the name 'frs_woo_product_tabs'
+	 * Saves the data input into the product boxes, as post meta data.
 	 *
 	 * @since 1.0.0
 	 *
@@ -299,10 +300,10 @@ class WooCommerceCustomProductTabsLite {
 		$tab_title   = sanitize_text_field( $_POST['_wc_custom_product_tabs_lite_tab_title'] );
 		$product     = wc_get_product( $post_id );
 
-		if ( empty( $tab_title ) && empty( $tab_content ) && $product->get_meta( 'frs_woo_product_tabs', true, 'edit' ) ) {
+		if ( empty( $tab_title ) && empty( $tab_content ) && $product->get_meta( self::PRODUCT_TABS_META_KEY, true, 'edit' ) ) {
 
 			// clean up if the custom tabs are removed
-			$product->delete_meta_data( 'frs_woo_product_tabs' );
+			$product->delete_meta_data( self::PRODUCT_TABS_META_KEY );
 			$product->save();
 
 		} elseif ( ! empty( $tab_title ) || ! empty( $tab_content ) ) {
@@ -343,7 +344,7 @@ class WooCommerceCustomProductTabsLite {
 				'content' => $tab_content,
 			);
 
-			$product->update_meta_data( 'frs_woo_product_tabs', $tab_data );
+			$product->update_meta_data( self::PRODUCT_TABS_META_KEY, $tab_data );
 			$product->save();
 		}
 	}
@@ -379,7 +380,7 @@ class WooCommerceCustomProductTabsLite {
 	private function product_has_custom_tabs( $product ) {
 
 		if ( false === $this->tab_data ) {
-			$this->tab_data = maybe_unserialize( $product->get_meta( 'frs_woo_product_tabs', true, 'edit' ) );
+			$this->tab_data = maybe_unserialize( $product->get_meta( self::PRODUCT_TABS_META_KEY, true, 'edit' ) );
 		}
 
 		// tab must at least have a title to exist
