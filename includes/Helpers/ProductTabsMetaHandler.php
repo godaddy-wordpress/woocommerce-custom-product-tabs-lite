@@ -1,6 +1,8 @@
 <?php
 /**
+ * Product Tabs Meta Handler
  *
+ * @since 1.9.1-dev.1
  */
 namespace WooCommerceCustomProductTabsLite\Helpers;
 
