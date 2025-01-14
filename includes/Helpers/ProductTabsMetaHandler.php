@@ -54,9 +54,9 @@ class ProductTabsMetaHandler
 	 * @param WC_Product $product
 	 * @return void
 	 */
-	public function deleteMeta(WC_Product $product, string $key)
+	public function deleteMeta(WC_Product $product) : void
 	{
-		$product->delete_meta_data($key);
+		$product->delete_meta_data(static::PRODUCT_TABS_META_KEY);
 	}
 
 	/**
@@ -70,11 +70,22 @@ class ProductTabsMetaHandler
 	{
 		$meta = $product->get_meta(static::LEGACY_PRODUCT_TABS_META_KEY);
 
-		if ($meta && is_serialized($meta)) {
+		if (is_serialized($meta)) {
 			return unserialize(trim($meta), ['allowed_classes' => false]);
 		}
 
 		return $meta;
+	}
+
+	/**
+	 * Deletes legacy product tabs meta.
+	 *
+	 * @param WC_Product $product
+	 * @return void
+	 */
+	private function deleteLegacyMeta(WC_Product $product)
+	{
+		$product->delete_meta_data(static::LEGACY_PRODUCT_TABS_META_KEY);
 	}
 
 	/**
@@ -86,8 +97,10 @@ class ProductTabsMetaHandler
 	public function maybeMigrateLegacyMeta(WC_Product $product)
 	{
 		if ($meta = $this->getLegacyMeta($product)) {
-			$this->deleteMeta($product, static::LEGACY_PRODUCT_TABS_META_KEY);
+			$this->deleteLegacyMeta($product);
 			$this->updateMeta($product, $meta);
+
+			$product->save();
 		}
 
 		return $meta;
