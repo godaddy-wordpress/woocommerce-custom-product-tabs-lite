@@ -103,7 +103,9 @@ class ProductTabsMetaHandler
 			return $shortCircutValue;
 		}
 
-		$product = wc_get_product($objectId);
+		if (! $product = wc_get_product($objectId)) {
+			return $shortCircutValue;
+		}
 
 		return $this->getMeta($product);
 	}
