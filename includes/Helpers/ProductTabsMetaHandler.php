@@ -58,7 +58,9 @@ class ProductTabsMetaHandler
 	public function maybeMigrateLegacyMeta(WC_Product $product)
 	{
 		if ($meta = $product->get_meta(static::LEGACY_PRODUCT_TABS_META_KEY)) {
-			$meta = maybe_unserialize($meta);
+			if (is_serialized($meta)) {
+				$meta = unserialize(trim($meta), ['allowed_classes' => false]);
+			}
 
 			$this->deleteLegacyMeta($product);
 			$this->updateMeta($product, $meta);
