@@ -84,7 +84,7 @@ class ProductTabsMetaHandler
 	 */
 	private function deleteLegacyMeta(WC_Product $product)
 	{
-		$product->delete_meta_data(self::LEGACY_PRODUCT_TABS_META_KEY);
+		$product->delete_meta_data(static::LEGACY_PRODUCT_TABS_META_KEY);
 	}
 
 	/**
