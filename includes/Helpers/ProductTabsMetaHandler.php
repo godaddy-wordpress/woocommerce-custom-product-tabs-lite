@@ -45,7 +45,7 @@ class ProductTabsMetaHandler
 	 */
 	public function updateMeta(WC_Product $product, array|string $meta) : void
 	{
-		$product->update_meta_data(static::PRODUCT_TABS_META_KEY, json_encode($meta));
+		$product->update_meta_data(static::PRODUCT_TABS_META_KEY, json_encode([$meta]));
 	}
 
 	/**
