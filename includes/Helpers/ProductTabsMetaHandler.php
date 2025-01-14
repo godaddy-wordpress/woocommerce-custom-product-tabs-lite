@@ -13,11 +13,6 @@ class ProductTabsMetaHandler
 	const PRODUCT_TABS_META_KEY = '_wc_custom_product_tabs_lite_product_tabs';
 	const LEGACY_PRODUCT_TABS_META_KEY = 'frs_woo_product_tabs';
 
-	public function __construct()
-	{
-		$this->addHooks();
-	}
-
 	public function addHooks()
 	{
 		add_filter('get_post_metadata', [$this, 'maybeConvertLegacyProductTabsMeta'], 10, 5);

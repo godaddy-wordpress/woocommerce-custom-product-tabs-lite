@@ -94,6 +94,8 @@ class WooCommerceCustomProductTabsLite {
 	 */
 	public function addHooks()
 	{
+		$this->productTabsMetaHandler->addHooks();
+
 		add_action( 'init',             array( $this, 'load_translation' ) );
 		add_action( 'woocommerce_init', array( $this, 'init' ) );
 
