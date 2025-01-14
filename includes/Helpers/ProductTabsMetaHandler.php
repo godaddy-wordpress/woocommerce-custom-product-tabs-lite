@@ -101,9 +101,11 @@ class ProductTabsMetaHandler
 			$this->updateMeta($product, $meta);
 
 			$product->save();
+
+			return $meta;
 		}
 
-		return $meta;
+		return false;
 	}
 
 	/**
@@ -126,8 +128,10 @@ class ProductTabsMetaHandler
 			return $shortCircutValue;
 		}
 
-		$this->maybeMigrateLegacyMeta($product);
+		if($migrated = $this->maybeMigrateLegacyMeta($product)) {
+			return $migrated;
+		}
 
-		return $product->get_meta(static::PRODUCT_TABS_META_KEY, true, 'edit');
+		return $product->get_meta(static::PRODUCT_TABS_META_KEY);
 	}
 }
