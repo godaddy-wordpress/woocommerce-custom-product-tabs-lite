@@ -22,19 +22,18 @@ class ProductTabsMetaHandler
 	 * Gets product meta.
 	 *
 	 * @param WC_Product $product
+	 * @param string $context
 	 * @return mixed
 	 */
 	public function getMeta(WC_Product $product, string $context = 'edit')
 	{
-		$this->maybeMigrateLegacyMeta($product);
-
 		$meta = $product->get_meta(static::PRODUCT_TABS_META_KEY, true, $context);
 
-		if (is_string($meta)) {
+		if (! empty($meta) && is_string($meta)) {
 			return json_decode($meta, true);
 		}
 
-		return $meta;
+		return $this->maybeMigrateLegacyMeta($product);
 	}
 
 	/**
@@ -46,25 +45,7 @@ class ProductTabsMetaHandler
 	 */
 	public function updateMeta(WC_Product $product, array|string $meta) : void
 	{
-		$product->update_meta_data(static::PRODUCT_TABS_META_KEY, json_encode(maybe_unserialize($meta)));
-	}
-
-	/**
-	 * (Maybe) migrates legacy product tabs meta to the new field.
-	 *
-	 * @param WC_Product $product
-	 * @return void
-	 */
-	public function maybeMigrateLegacyMeta(WC_Product $product)
-	{
-		if ($meta = $product->get_meta(static::LEGACY_PRODUCT_TABS_META_KEY)) {
-			if (is_serialized($meta)) {
-				$meta = unserialize(trim($meta), ['allowed_classes' => false]);
-			}
-
-			$this->deleteLegacyMeta($product);
-			$this->updateMeta($product, $meta);
-		}
+		$product->update_meta_data(static::PRODUCT_TABS_META_KEY, json_encode($meta));
 	}
 
 	/**
@@ -73,24 +54,47 @@ class ProductTabsMetaHandler
 	 * @param WC_Product $product
 	 * @return void
 	 */
-	public function deleteMeta(WC_Product $product)
+	public function deleteMeta(WC_Product $product, string $key)
 	{
-		$product->delete_meta_data(static::PRODUCT_TABS_META_KEY);
+		$product->delete_meta_data($key);
 	}
 
 	/**
-	 * Deletes legacy product tabs meta.
+	 * Gets the legacy tabs meta.
+	 *
+	 * @param WC_Product $product
+	 *
+	 * @return mixed
+	 */
+	private function getLegacyMeta(WC_Product $product)
+	{
+		$meta = $product->get_meta(static::LEGACY_PRODUCT_TABS_META_KEY);
+
+		if ($meta && is_serialized($meta)) {
+			return unserialize(trim($meta), ['allowed_classes' => false]);
+		}
+
+		return $meta;
+	}
+
+	/**
+	 * (Maybe) migrates legacy product tabs meta to the new field.
 	 *
 	 * @param WC_Product $product
 	 * @return mixed
 	 */
-	private function deleteLegacyMeta(WC_Product $product)
+	public function maybeMigrateLegacyMeta(WC_Product $product)
 	{
-		$product->delete_meta_data(static::LEGACY_PRODUCT_TABS_META_KEY);
+		if ($meta = $this->getLegacyMeta($product)) {
+			$this->deleteMeta($product, static::LEGACY_PRODUCT_TABS_META_KEY);
+			$this->updateMeta($product, $meta);
+		}
+
+		return $meta;
 	}
 
 	/**
-	 * Maybe converts legacy product tabs meta to new meta.
+	 * (Maybe) converts legacy product tabs meta to new meta.
 	 *
 	 * @param null $shortCircutValue The short-circuit meta value. Defualt null affects nothing.
 	 * @param int $objectId Object ID.
@@ -109,6 +113,6 @@ class ProductTabsMetaHandler
 			return $shortCircutValue;
 		}
 
-		return $this->getMeta($product);
+		return $this->maybeMigrateLegacyMeta($product);
 	}
 }
