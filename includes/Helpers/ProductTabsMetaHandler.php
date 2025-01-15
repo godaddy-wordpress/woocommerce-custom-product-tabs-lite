@@ -132,6 +132,6 @@ class ProductTabsMetaHandler
 			return $migrated;
 		}
 
-		return $product->get_meta(static::PRODUCT_TABS_META_KEY);
+		return $this->getMeta($product);
 	}
 }
