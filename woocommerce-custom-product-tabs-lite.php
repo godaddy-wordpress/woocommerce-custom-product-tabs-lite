@@ -55,6 +55,8 @@ class WooCommerceCustomProductTabsLite {
 
 	public Plugin $plugin;
 
+	public ProductTabsMetaHandler $metaHandler;
+
 	/**
 	 * Gets things started by adding an action to initialize this plugin once WooCommerce is known to be active and initialized.
 	 *
@@ -79,6 +81,7 @@ class WooCommerceCustomProductTabsLite {
 	public function includes()
 	{
 		require_once(__DIR__ . '/src/Plugin.php');
+		require_once(__DIR__ . '/src/Helpers/ProductTabsHelper.php');
 	}
 
 
@@ -99,6 +102,7 @@ class WooCommerceCustomProductTabsLite {
 	public function init()
 	{
 		$this->plugin = new Plugin;
+		$this->metaHandler = new ProductTabsMetaHandler;
 
 		$this->plugin->init();
 	}

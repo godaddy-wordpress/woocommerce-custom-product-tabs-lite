@@ -15,8 +15,6 @@ class Plugin
 
 	private Frontend $frontend;
 
-	public ProductTabsMetaHandler $productTabsMetaHandler;
-
 	/**
 	 * Initializes the rest of the plugin.
 	 *
@@ -37,18 +35,14 @@ class Plugin
 	{
 		require_once(__DIR__ . '/Admin.php');
 		require_once(__DIR__ . '/Frontend.php');
-		require_once(__DIR__ . '/Helpers/ProductTabsMetaHandler.php');
 
 		$this->admin = new Admin;
 		$this->frontend = new Frontend;
-
-		$this->productTabsMetaHandler = new ProductTabsMetaHandler;
 	}
 
 	public function addHooks()
 	{
 		$this->admin->addHooks();
 		$this->frontend->addHooks();
-		$this->productTabsMetaHandler->addHooks();
 	}
 }

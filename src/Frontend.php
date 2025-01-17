@@ -32,7 +32,7 @@ class Frontend
 	public function product_has_custom_tabs( $product ) {
 
 		if ( false === $this->tab_data ) {
-			$this->tab_data = wc_custom_product_tabs_lite()->plugin->productTabsMetaHandler->getMeta($product);
+			$this->tab_data = wc_custom_product_tabs_lite()->metaHandler->getMeta($product);
 		}
 
 		// tab must at least have a title to exist

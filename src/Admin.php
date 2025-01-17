@@ -36,7 +36,7 @@ class Admin
 		$product = wc_get_product( $post );
 
 		// pull the custom tab data out of the database
-		$tab_data = wc_custom_product_tabs_lite()->plugin->productTabsMetaHandler->getMeta($product);
+		$tab_data = wc_custom_product_tabs_lite()->metaHandler->getMeta($product);
 
 		if ( empty( $tab_data ) ) {
 
@@ -86,10 +86,10 @@ class Admin
 		$tab_title   = sanitize_text_field( $_POST['_wc_custom_product_tabs_lite_tab_title'] );
 		$product     = wc_get_product( $post_id );
 
-		if ( empty( $tab_title ) && empty( $tab_content ) && wc_custom_product_tabs_lite()->plugin->productTabsMetaHandler->getMeta($product) ) {
+		if ( empty( $tab_title ) && empty( $tab_content ) && wc_custom_product_tabs_lite()->metaHandler->getMeta($product) ) {
 
 			// clean up if the custom tabs are removed
-			wc_custom_product_tabs_lite()->plugin->productTabsMetaHandler->deleteMeta($product);
+			wc_custom_product_tabs_lite()->metaHandler->deleteMeta($product);
 			$product->save();
 
 		} elseif ( ! empty( $tab_title ) || ! empty( $tab_content ) ) {
@@ -130,7 +130,7 @@ class Admin
 				]
 			];
 
-			wc_custom_product_tabs_lite()->plugin->productTabsMetaHandler->updateMeta($product, $tab_data);
+			wc_custom_product_tabs_lite()->metaHandler->updateMeta($product, $tab_data);
 			$product->save();
 		}
 	}
