@@ -81,7 +81,7 @@ class WooCommerceCustomProductTabsLite {
 	 */
 	public function includes()
 	{
-		require_once(__DIR__ . '/includes/Helpers/ProductTabsMetaHandler.php');
+		require_once(__DIR__ . '/src/Helpers/ProductTabsMetaHandler.php');
 
 		$this->productTabsMetaHandler = new ProductTabsMetaHandler;
 	}
