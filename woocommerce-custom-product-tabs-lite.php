@@ -22,7 +22,9 @@
  * WC requires at least: 3.9.4
  * WC tested up to: 9.3.3
  */
+
 use WooCommerceCustomProductTabsLite\Helpers\ProductTabsMetaHandler;
+use WooCommerceCustomProductTabsLite\Plugin;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -39,7 +41,6 @@ if ( ! WooCommerceCustomProductTabsLite::is_plugin_active( 'woocommerce.php' ) |
  */
 class WooCommerceCustomProductTabsLite {
 
-
 	/** plugin version number */
 	const VERSION = '1.9.1-dev.1';
 
@@ -49,14 +50,10 @@ class WooCommerceCustomProductTabsLite {
 	/** plugin version name */
 	const VERSION_OPTION_NAME = 'woocommerce_custom_product_tabs_lite_db_version';
 
-	/** @var bool|array tab data */
-	private $tab_data = false;
-
-	private ProductTabsMetaHandler $productTabsMetaHandler;
-
 	/** @var WooCommerceCustomProductTabsLite single instance of this plugin */
 	protected static $instance;
 
+	public Plugin $plugin;
 
 	/**
 	 * Gets things started by adding an action to initialize this plugin once WooCommerce is known to be active and initialized.
@@ -81,9 +78,7 @@ class WooCommerceCustomProductTabsLite {
 	 */
 	public function includes()
 	{
-		require_once(__DIR__ . '/src/Helpers/ProductTabsMetaHandler.php');
-
-		$this->productTabsMetaHandler = new ProductTabsMetaHandler;
+		require_once(__DIR__ . '/src/Plugin.php');
 	}
 
 
@@ -94,15 +89,19 @@ class WooCommerceCustomProductTabsLite {
 	 */
 	public function addHooks()
 	{
-		$this->productTabsMetaHandler->addHooks();
-
-		add_action( 'init',             array( $this, 'load_translation' ) );
-		add_action( 'woocommerce_init', array( $this, 'init' ) );
+		add_action('init',             [$this, 'load_translation']);
+		add_action('woocommerce_init', [$this, 'init']);
 
 		// handle HPOS compatibility
-		add_action( 'before_woocommerce_init', [ $this, 'handle_hpos_compatibility' ] );
+		add_action('before_woocommerce_init', [$this, 'handle_hpos_compatibility']);
 	}
 
+	public function init()
+	{
+		$this->plugin = new Plugin;
+
+		$this->plugin->init();
+	}
 
 	/**
 	 * Declares HPOS compatibility.
@@ -155,222 +154,6 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/**
-	 * Init WooCommerce Product Tabs Lite extension once we know WooCommerce is active
-	 */
-	public function init() {
-
-		add_action( 'woocommerce_product_write_panel_tabs', array( $this, 'product_write_panel_tab' ) );
-		add_action( 'woocommerce_product_data_panels',      array( $this, 'product_write_panel' ) );
-		add_action( 'woocommerce_process_product_meta',     array( $this, 'product_save_data' ), 10, 2 );
-
-		// frontend stuff
-		add_filter( 'woocommerce_product_tabs', array( $this, 'add_custom_product_tabs' ) );
-
-		// allow the use of shortcodes within the tab content
-		add_filter( 'woocommerce_custom_product_tabs_lite_content', 'do_shortcode' );
-	}
-
-
-	/** Frontend methods ******************************************************/
-
-
-	/**
-	 * Add the custom product tab
-	 *
-	 * $tabs structure:
-	 * Array(
-	 *   id => Array(
-	 *     'title'    => (string) Tab title,
-	 *     'priority' => (string) Tab priority,
-	 *     'callback' => (mixed) callback function,
-	 *   )
-	 * )
-	 *
-	 * @since 1.2.0
-	 * @param array $tabs array representing the product tabs
-	 * @return array representing the product tabs
-	 */
-	public function add_custom_product_tabs( $tabs ) {
-		global $product;
-
-		if ( ! $product instanceof WC_Product ) {
-			return $tabs;
-		}
-
-		if ( $this->product_has_custom_tabs( $product ) ) {
-
-			foreach ( $this->tab_data as $tab ) {
-				$tab_title = __( $tab['title'], 'woocommerce-custom-product-tabs-lite' );
-				$tabs[ $tab['id'] ] = array(
-					'title'    => apply_filters( 'woocommerce_custom_product_tabs_lite_title', $tab_title, $product, $this ),
-					'priority' => 25,
-					'callback' => array( $this, 'custom_product_tabs_panel_content' ),
-					'content'  => $tab['content'],  // custom field
-				);
-			}
-		}
-
-		return $tabs;
-	}
-
-
-	/**
-	 * Renders the custom product tab panel content for the given $tab.
-	 *
-	 * @see WooCommerceCustomProductTabsLite::add_custom_product_tabs() callback
-	 *
-	 * $tab structure:
-	 * Array(
-	 *   'title'    => (string) Tab title,
-	 *   'priority' => (string) Tab priority,
-	 *   'callback' => (mixed) callback function,
-	 *   'id'       => (int) tab post identifier,
-	 *   'content'  => (string) tab content,
-	 * )
-	 *
-	 * @param string $key tab key
-	 * @param array $tab tab data
-	 */
-	public function custom_product_tabs_panel_content( $key, $tab ) {
-
-		// allow shortcodes to function
-		$content = apply_filters( 'the_content', $tab['content'] );
-		$content = str_replace( ']]>', ']]&gt;', $content );
-
-		echo wp_kses_post( apply_filters( 'woocommerce_custom_product_tabs_lite_heading', '<h2>' . esc_html( $tab['title'] ) . '</h2>', $tab ) );
-		echo wp_kses_post( apply_filters( 'woocommerce_custom_product_tabs_lite_content', $content, $tab ) );
-	}
-
-
-	/** Admin methods ******************************************************/
-
-
-	/**
-	 * Adds a new tab to the Product Data postbox in the admin product interface.
-	 *
-	 * @since 1.0.0
-	 */
-	public function product_write_panel_tab() {
-		echo "<li class=\"product_tabs_lite_tab\"><a href=\"#woocommerce_product_tabs_lite\"><span>" . esc_html__( 'Custom Tab', 'woocommerce-custom-product-tabs-lite' ) . "</span></a></li>";
-	}
-
-
-	/**
-	 * Adds the panel to the Product Data postbox in the product interface
-	 *
-	 * @since 1.0.0
-	 */
-	public function product_write_panel() {
-		global $post;
-
-		$product = wc_get_product( $post );
-
-		// pull the custom tab data out of the database
-		$tab_data = $this->productTabsMetaHandler->getMeta($product);
-
-		if ( empty( $tab_data ) ) {
-
-			// start with an array for PHP 7.1+
-			$tab_data = array();
-
-			$tab_data[] = array(
-				'title'   => '',
-				'content' => '',
-			);
-		}
-
-		foreach ( $tab_data as $tab ) {
-			// display the custom tab panel
-
-			echo '<div id="woocommerce_product_tabs_lite" class="panel wc-metaboxes-wrapper woocommerce_options_panel">';
-				woocommerce_wp_text_input( array(
-					'id'          => '_wc_custom_product_tabs_lite_tab_title',
-					'label'       => __( 'Tab Title', 'woocommerce-custom-product-tabs-lite' ),
-					'description' => __( 'Required for tab to be visible', 'woocommerce-custom-product-tabs-lite' ),
-					'value'       => $tab['title'],
-				));
-
-				woocommerce_wp_textarea_input( array(
-					'id'          => '_wc_custom_product_tabs_lite_tab_content',
-					'label'       => __( 'Content', 'woocommerce-custom-product-tabs-lite' ),
-					'placeholder' => __( 'HTML and text to display.', 'woocommerce-custom-product-tabs-lite' ),
-					'value'       => $tab['content'],
-					'style'       => 'width:70%;height:14.5em;',
-				));
-			echo '</div>';
-		}
-	}
-
-
-	/**
-	 * Saves the data input into the product boxes, as post meta data.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param int $post_id the post (product) identifier
-	 * @param stdClass $post the post (product)
-	 */
-	public function product_save_data( $post_id, $post ) {
-
-		// stripslashes() so that shortcodes with arguments can be  used
-		$tab_content = wp_kses_post( stripslashes( $_POST['_wc_custom_product_tabs_lite_tab_content'] ) );
-		$tab_title   = sanitize_text_field( $_POST['_wc_custom_product_tabs_lite_tab_title'] );
-		$product     = wc_get_product( $post_id );
-
-		if ( empty( $tab_title ) && empty( $tab_content ) && $this->productTabsMetaHandler->getMeta($product) ) {
-
-			// clean up if the custom tabs are removed
-			$this->productTabsMetaHandler->deleteMeta($product);
-			$product->save();
-
-		} elseif ( ! empty( $tab_title ) || ! empty( $tab_content ) ) {
-
-			$tab_id = '';
-
-			if ( $tab_title ) {
-
-				if ( strlen( $tab_title ) !== strlen( mb_convert_encoding( $tab_title, 'UTF-8', mb_detect_encoding( $tab_title ) ) ) ) {
-
-					// can't have titles with utf8 characters as it breaks the tab-switching javascript
-					$tab_id = "tab-custom";
-
-				} else {
-
-					// convert the tab title into an id string
-					$tab_id = strtolower( $tab_title );
-
-					// remove non-alphas, numbers, underscores or whitespace
-					$tab_id = preg_replace( "/[^\w\s]/", '', $tab_id );
-
-					// replace all underscores with single spaces
-					$tab_id = preg_replace( "/_+/", ' ', $tab_id );
-
-					// replace all multiple spaces with single dashes
-					$tab_id = preg_replace( "/\s+/", '-', $tab_id );
-
-					// prepend with 'tab-' string
-					$tab_id = 'tab-' . $tab_id;
-				}
-			}
-
-			$tab_data = [
-				[
-					'title'   => $tab_title,
-					'id'      => $tab_id,
-					'content' => $tab_content,
-				]
-			];
-
-			$this->productTabsMetaHandler->updateMeta($product, $tab_data);
-			$product->save();
-		}
-	}
-
-
-	/** Helper methods ******************************************************/
-
-
-	/**
 	 * Main Custom Product Tabs Lite Instance, ensures only one instance is/can be loaded
 	 *
 	 * @since 1.4.0
@@ -384,24 +167,6 @@ class WooCommerceCustomProductTabsLite {
 		}
 
 		return self::$instance;
-	}
-
-
-	/**
-	 * Lazy-load the product_tabs meta data, and return true if it exists,
-	 * false otherwise
-	 *
-	 * @param \WC_Product $product the product object
-	 * @return true if there is custom tab data, false otherwise
-	 */
-	private function product_has_custom_tabs( $product ) {
-
-		if ( false === $this->tab_data ) {
-			$this->tab_data = $this->productTabsMetaHandler->getMeta($product);
-		}
-
-		// tab must at least have a title to exist
-		return ! empty( $this->tab_data ) && ! empty( $this->tab_data[0] ) && ! empty( $this->tab_data[0]['title'] );
 	}
 
 
