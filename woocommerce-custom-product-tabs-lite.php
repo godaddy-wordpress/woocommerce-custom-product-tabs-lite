@@ -353,11 +353,13 @@ class WooCommerceCustomProductTabsLite {
 				}
 			}
 
-			$tab_data = array(
-				'title'   => $tab_title,
-				'id'      => $tab_id,
-				'content' => $tab_content,
-			);
+			$tab_data = [
+				[
+					'title'   => $tab_title,
+					'id'      => $tab_id,
+					'content' => $tab_content,
+				]
+			];
 
 			$this->productTabsMetaHandler->updateMeta($product, $tab_data);
 			$product->save();

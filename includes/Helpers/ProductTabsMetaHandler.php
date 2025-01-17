@@ -45,7 +45,7 @@ class ProductTabsMetaHandler
 	 */
 	public function updateMeta(WC_Product &$product, array|string $meta) : void
 	{
-		$product->update_meta_data(static::PRODUCT_TABS_META_KEY, json_encode([$meta]));
+		$product->update_meta_data(static::PRODUCT_TABS_META_KEY, json_encode($meta));
 	}
 
 	/**
@@ -98,7 +98,7 @@ class ProductTabsMetaHandler
 	{
 		if ($meta = $this->getLegacyMeta($product)) {
 			$this->deleteLegacyMeta($product);
-			$this->updateMeta($product, $meta[0]);
+			$this->updateMeta($product, $meta);
 
 			$product->save();
 
@@ -111,21 +111,21 @@ class ProductTabsMetaHandler
 	/**
 	 * (Maybe) converts legacy product tabs meta to new meta.
 	 *
-	 * @param null $shortCircutValue The short-circuit meta value. Defualt null affects nothing.
+	 * @param null $shortCircuitValue The short-circuit meta value. Default null affects nothing.
 	 * @param int $objectId Object ID.
 	 * @param string $metaKey Meta key.
 	 * @param bool $single Whether to return only the first value.
 	 * @param string $metaType Meta type.
 	 * @return mixed
 	 */
-	public function maybeConvertLegacyProductTabsMeta($shortCircutValue, $objectId, $metaKey, $single, $metaType)
+	public function maybeConvertLegacyProductTabsMeta($shortCircuitValue, $objectId, $metaKey, $single, $metaType)
 	{
 		if (static::LEGACY_PRODUCT_TABS_META_KEY !== $metaKey) {
-			return $shortCircutValue;
+			return $shortCircuitValue;
 		}
 
 		if (! $product = wc_get_product($objectId)) {
-			return $shortCircutValue;
+			return $shortCircuitValue;
 		}
 
 		if($migrated = $this->maybeMigrateLegacyMeta($product)) {
@@ -134,7 +134,10 @@ class ProductTabsMetaHandler
 			$meta = $this->getMeta($product);
 		}
 
-		// Array-wrapped for back-compat. updateMeta() handles this for saves.
+		/**
+		 * The filter expects the content to be in an extra array, and {@see get_metadata_raw()} will handle pulling
+		 * out the first value for us.
+		 */
 		return [$meta];
 	}
 }
