@@ -325,8 +325,7 @@ class WooCommerceCustomProductTabsLite {
 
 		} elseif ( ! empty( $tab_title ) || ! empty( $tab_content ) ) {
 
-			$tab_data = array();
-			$tab_id   = '';
+			$tab_id = '';
 
 			if ( $tab_title ) {
 
@@ -354,8 +353,7 @@ class WooCommerceCustomProductTabsLite {
 				}
 			}
 
-			// save the serialized data to the database
-			$tab_data[] = array(
+			$tab_data = array(
 				'title'   => $tab_title,
 				'id'      => $tab_id,
 				'content' => $tab_content,
