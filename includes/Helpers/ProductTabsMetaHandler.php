@@ -45,7 +45,7 @@ class ProductTabsMetaHandler
 	 */
 	public function updateMeta(WC_Product &$product, array|string $meta) : void
 	{
-		$product->update_meta_data(static::PRODUCT_TABS_META_KEY, json_encode($meta));
+		$product->update_meta_data(static::PRODUCT_TABS_META_KEY, json_encode([$meta]));
 	}
 
 	/**
@@ -98,7 +98,7 @@ class ProductTabsMetaHandler
 	{
 		if ($meta = $this->getLegacyMeta($product)) {
 			$this->deleteLegacyMeta($product);
-			$this->updateMeta($product, $meta);
+			$this->updateMeta($product, $meta[0]);
 
 			$product->save();
 
@@ -129,9 +129,12 @@ class ProductTabsMetaHandler
 		}
 
 		if($migrated = $this->maybeMigrateLegacyMeta($product)) {
-			return $migrated;
+			$meta = $migrated;
+		} else {
+			$meta = $this->getMeta($product);
 		}
 
-		return $this->getMeta($product);
+		// Array-wrapped for back-compat. updateMeta() handles this for saves.
+		return [$meta];
 	}
 }
