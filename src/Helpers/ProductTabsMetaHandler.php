@@ -39,11 +39,11 @@ class ProductTabsMetaHandler
 	/**
 	 * Updates product tabs meta.
 	 *
-	 * @param WC_Product $product Passed by reference.
-	 * @param array      $meta
+	 * @param WC_Product  $product Passed by reference.
+	 * @param array|mixed $meta
 	 * @return void
 	 */
-	public function updateMeta(WC_Product &$product, array|string $meta) : void
+	public function updateMeta(WC_Product &$product, $meta) : void
 	{
 		$product->update_meta_data(static::PRODUCT_TABS_META_KEY, json_encode($meta));
 	}
