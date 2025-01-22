@@ -4,7 +4,7 @@ Tags: woocommerce, product tabs, custom tab, woo commerce tab
 Requires at least: 5.6
 Requires PHP: 7.4
 Tested up to: 6.7
-Stable tag: 1.9.0
+Stable tag: 1.9.1-dev.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -82,6 +82,9 @@ add_filter( 'woocommerce_custom_product_tabs_lite_title', 'sv_change_custom_tab_
 `
 
 == Changelog ==
+
+= 2025.nn.nn - version 1.9.1-dev.1 =
+* Misc - Standardize product tabs meta storage
 
 = 2024.10.29 - version 1.9.0 =
 * Fix - Ensure PHP 8.2+ compatibility

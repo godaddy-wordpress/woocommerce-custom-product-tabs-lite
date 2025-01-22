@@ -5,7 +5,7 @@
  * Description: Extends WooCommerce to add a custom product view page tab
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
- * Version: 1.9.0
+ * Version: 1.9.1-dev.1
  * Tested up to: 6.6.2
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
@@ -22,6 +22,7 @@
  * WC requires at least: 3.9.4
  * WC tested up to: 9.3.3
  */
+use WooCommerceCustomProductTabsLite\Helpers\ProductTabsMetaHandler;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -40,7 +41,7 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/** plugin version number */
-	const VERSION = '1.9.0';
+	const VERSION = '1.9.1-dev.1';
 
 	/** required WooCommerce version number */
 	const MIN_WOOCOMMERCE_VERSION = '3.9.4';
@@ -50,6 +51,8 @@ class WooCommerceCustomProductTabsLite {
 
 	/** @var bool|array tab data */
 	private $tab_data = false;
+
+	private ProductTabsMetaHandler $productTabsMetaHandler;
 
 	/** @var WooCommerceCustomProductTabsLite single instance of this plugin */
 	protected static $instance;
@@ -66,6 +69,32 @@ class WooCommerceCustomProductTabsLite {
 		if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
 			$this->install();
 		}
+
+		$this->includes();
+		$this->addHooks();
+	}
+
+	/**
+	 * Loads required files.
+	 *
+	 * @return void
+	 */
+	public function includes()
+	{
+		require_once(__DIR__ . '/src/Helpers/ProductTabsMetaHandler.php');
+
+		$this->productTabsMetaHandler = new ProductTabsMetaHandler;
+	}
+
+
+	/**
+	 * Registers hook callbacks to bootstrap the plugin.
+	 *
+	 * @return void
+	 */
+	public function addHooks()
+	{
+		$this->productTabsMetaHandler->addHooks();
 
 		add_action( 'init',             array( $this, 'load_translation' ) );
 		add_action( 'woocommerce_init', array( $this, 'init' ) );
@@ -237,7 +266,7 @@ class WooCommerceCustomProductTabsLite {
 		$product = wc_get_product( $post );
 
 		// pull the custom tab data out of the database
-		$tab_data = $product->get_meta( 'frs_woo_product_tabs', true, 'edit' );
+		$tab_data = $this->productTabsMetaHandler->getMeta($product);
 
 		if ( empty( $tab_data ) ) {
 
@@ -274,8 +303,7 @@ class WooCommerceCustomProductTabsLite {
 
 
 	/**
-	 * Saves the data input into the product boxes, as post meta data
-	 * identified by the name 'frs_woo_product_tabs'
+	 * Saves the data input into the product boxes, as post meta data.
 	 *
 	 * @since 1.0.0
 	 *
@@ -289,16 +317,15 @@ class WooCommerceCustomProductTabsLite {
 		$tab_title   = sanitize_text_field( $_POST['_wc_custom_product_tabs_lite_tab_title'] );
 		$product     = wc_get_product( $post_id );
 
-		if ( empty( $tab_title ) && empty( $tab_content ) && $product->get_meta( 'frs_woo_product_tabs', true, 'edit' ) ) {
+		if ( empty( $tab_title ) && empty( $tab_content ) && $this->productTabsMetaHandler->getMeta($product) ) {
 
 			// clean up if the custom tabs are removed
-			$product->delete_meta_data( 'frs_woo_product_tabs' );
+			$this->productTabsMetaHandler->deleteMeta($product);
 			$product->save();
 
 		} elseif ( ! empty( $tab_title ) || ! empty( $tab_content ) ) {
 
-			$tab_data = array();
-			$tab_id   = '';
+			$tab_id = '';
 
 			if ( $tab_title ) {
 
@@ -326,14 +353,15 @@ class WooCommerceCustomProductTabsLite {
 				}
 			}
 
-			// save the serialized data to the database
-			$tab_data[] = array(
-				'title'   => $tab_title,
-				'id'      => $tab_id,
-				'content' => $tab_content,
-			);
+			$tab_data = [
+				[
+					'title'   => $tab_title,
+					'id'      => $tab_id,
+					'content' => $tab_content,
+				]
+			];
 
-			$product->update_meta_data( 'frs_woo_product_tabs', $tab_data );
+			$this->productTabsMetaHandler->updateMeta($product, $tab_data);
 			$product->save();
 		}
 	}
@@ -369,7 +397,7 @@ class WooCommerceCustomProductTabsLite {
 	private function product_has_custom_tabs( $product ) {
 
 		if ( false === $this->tab_data ) {
-			$this->tab_data = maybe_unserialize( $product->get_meta( 'frs_woo_product_tabs', true, 'edit' ) );
+			$this->tab_data = $this->productTabsMetaHandler->getMeta($product);
 		}
 
 		// tab must at least have a title to exist
