@@ -6,7 +6,7 @@
  * Author: SkyVerge
  * Author URI: http://www.skyverge.com/
  * Version: 1.9.1
- * Tested up to: 6.7.1
+ * Tested up to: 6.9.1
  * Text Domain: woocommerce-custom-product-tabs-lite
  * Domain Path: /i18n/languages/
  *
